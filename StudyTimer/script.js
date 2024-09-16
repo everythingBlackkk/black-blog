@@ -4,6 +4,7 @@ let totalTime;
 let isFocusMode = true;
 let isRunning = false;
 let todayMinutes = 0;
+let alertAudio;
 const timerDisplay = document.querySelector('.timer');
 const modeDisplay = document.querySelector('.mode');
 const startStopButton = document.getElementById('startStop');
@@ -16,6 +17,10 @@ const notesInput = document.getElementById('notes');
 const saveNotesButton = document.getElementById('saveNotes');
 const clearDataButton = document.getElementById('clearData');
 
+document.addEventListener('DOMContentLoaded', () => {
+    alertAudio = new Audio('../Media/alert.mp3');
+});
+
 function startTimer() {
     if (!isRunning) {
         isRunning = true;
@@ -26,6 +31,7 @@ function startTimer() {
         startStopButton.textContent = 'RESUME';
         clearInterval(timer);
     }
+    saveState();
 }
 
 function resetTimer() {
@@ -33,6 +39,7 @@ function resetTimer() {
     isRunning = false;
     startStopButton.textContent = 'START';
     setInitialTime();
+    saveState();
 }
 
 function setInitialTime() {
@@ -52,6 +59,7 @@ function setInitialTime() {
     
     updateTimerDisplay();
     updateProgressCircle();
+    saveState();
 }
 
 function updateTimer() {
@@ -62,17 +70,23 @@ function updateTimer() {
         if (isFocusMode && timeLeft % 60 === 0) {
             todayMinutes++;
             updateHistoryTable();
+            saveState();
         }
     } else {
         clearInterval(timer);
         if (isFocusMode) {
             addToHistory();
         }
+        playAlertSound();
         isFocusMode = !isFocusMode;
         setInitialTime();
         isRunning = false;
         startStopButton.textContent = 'START';
     }
+}
+
+function playAlertSound() {
+    alertAudio.play();
 }
 
 function updateTimerDisplay() {
@@ -87,7 +101,7 @@ function updateProgressCircle() {
 }
 
 function addToHistory() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     let historyData = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
     let todayEntry = historyData.find(entry => entry.date === today);
     
@@ -98,7 +112,8 @@ function addToHistory() {
         historyData.push({ date: today, minutes: todayMinutes, notes: notesInput.value });
     }
 
-    historyData = historyData.slice(-7);
+    // Keep only the last 7 days of data
+    historyData = historyData.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 7);
 
     localStorage.setItem('pomodoroHistory', JSON.stringify(historyData));
     updateHistoryTable();
@@ -106,7 +121,7 @@ function addToHistory() {
 
 function updateHistoryTable() {
     const historyData = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     historyTable.innerHTML = '<tr><th>Date</th><th>Minutes Completed</th><th>Notes</th></tr>';
     
     // Sort the history data by date in descending order
@@ -133,16 +148,22 @@ function updateHistoryTable() {
 function saveNotes() {
     addToHistory();
     alert('Notes saved successfully!');
-    notesInput.value = '';
+    saveState();
 }
 
 function checkDateChange() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     const lastDate = localStorage.getItem('lastDate');
     
     if (lastDate && lastDate !== today) {
-        addToHistory();
-        todayMinutes = 0;
+        addToHistory(); 
+        todayMinutes = 0; 
+        notesInput.value = ''; 
+        timeLeft = 0; 
+        isRunning = false; 
+        updateTimerDisplay();
+        updateProgressCircle();
+        startStopButton.textContent = 'START';
     }
     
     localStorage.setItem('lastDate', today);
@@ -152,9 +173,55 @@ function clearAllData() {
     if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
         localStorage.removeItem('pomodoroHistory');
         localStorage.removeItem('lastDate');
+        localStorage.removeItem('pomodoroState');
         todayMinutes = 0;
         notesInput.value = '';
         updateHistoryTable();
+        setInitialTime();
+    }
+}
+
+function saveState() {
+    const state = {
+        timeLeft,
+        totalTime,
+        isFocusMode,
+        isRunning,
+        todayMinutes,
+        focusTime: focusTimeInput.value,
+        breakTime: breakTimeInput.value,
+        notes: notesInput.value,
+        date: new Date().toLocaleDateString('en-CA')
+    };
+    localStorage.setItem('pomodoroState', JSON.stringify(state));
+}
+
+function loadState() {
+    const savedState = JSON.parse(localStorage.getItem('pomodoroState'));
+    const today = new Date().toLocaleDateString('en-CA');
+    
+    if (savedState && savedState.date === today) {
+        timeLeft = savedState.timeLeft;
+        totalTime = savedState.totalTime;
+        isFocusMode = savedState.isFocusMode;
+        isRunning = savedState.isRunning;
+        todayMinutes = savedState.todayMinutes;
+        focusTimeInput.value = savedState.focusTime;
+        breakTimeInput.value = savedState.breakTime;
+        notesInput.value = savedState.notes;
+
+        updateTimerDisplay();
+        updateProgressCircle();
+        modeDisplay.textContent = isFocusMode ? 'FOCUS' : 'BREAK';
+        startStopButton.textContent = isRunning ? 'PAUSE' : 'START';
+        
+        if (isRunning) {
+            timer = setInterval(updateTimer, 1000);
+        }
+    } else {
+        todayMinutes = 0;
+        notesInput.value = '';
+        setInitialTime();
     }
 }
 
@@ -165,15 +232,6 @@ breakTimeInput.addEventListener('change', setInitialTime);
 saveNotesButton.addEventListener('click', saveNotes);
 clearDataButton.addEventListener('click', clearAllData);
 
-const today = new Date().toISOString().split('T')[0];
-const historyData = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
-const todayEntry = historyData.find(entry => entry.date === today);
-if (todayEntry) {
-    todayMinutes = todayEntry.minutes;
-    notesInput.value = todayEntry.notes;
-}
-
 checkDateChange();
+loadState();
 updateHistoryTable();
-setInitialTime();
-
