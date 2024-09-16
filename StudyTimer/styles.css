@@ -2,11 +2,42 @@
     --primary-color: #683FEA;
     --background-color: #121212;
     --text-color: #ffffff;
-    --card-background: rgba(30, 30, 30, 0.202);
+    --card-background: rgba(30, 30, 30, 0.582);
 }
-/* تحسينات للأجهزة المحمولة */
 
 @media (max-width: 600px) {
+    .settings {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .settings label {
+        margin-bottom: 5px;
+    }
+
+    .settings input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+
+    .timer-setting {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .timer-setting label {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .timer-setting input {
+        flex: 0 0 80px; 
+    }
     .container {
         padding: 10px;
     }
@@ -40,8 +71,8 @@
     th, td {
         padding: 8px;
     }
-}
 
+}
 
 body {
 font-family: 'Cairo', 'Roboto', sans-serif;
@@ -122,7 +153,7 @@ margin-bottom: 50px;
     font-weight: bold;
     z-index: 1;
 }
-/* From Uiverse.io by vinodjangid07 */ 
+
 .clear-data {
 margin-top: 20px;
 width: 50px;
@@ -224,10 +255,13 @@ transition-duration: .3s;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap; 
 }
+
 .settings label {
     margin-right: 10px;
 }
+
 .settings input {
     width: 60px;
     padding: 8px;
@@ -263,8 +297,8 @@ transition-duration: .3s;
     background-color: rgba(30, 30, 30, 0.8);
 }
 .save-notes {
-margin: 0 auto; /* توسيط الزر */
-display: block; /* تأكد من أن الزر يُعرض ككتلة لتوسيطه */
+margin: 0 auto;
+display: block; 
 border: none;
 width: 13em;
 height: 4em;
@@ -291,11 +325,11 @@ font-size: medium;
 
 .save-notes:hover {
 background: linear-gradient(0deg, #A47CF3, #683FEA);
-box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.3), /* تقليل التأثير الداخلي */
-inset 0px -3px 0px 0px rgba(0, 0, 0, 0.30), /* تقليل التأثير الداخلي */
-0px 0px 0px 3px rgba(255, 255, 255, 0.30), /* تقليل التأثير الخارجي */
-0px 0px 50px 0px #9917FF; /* تقليل التوهج */
-transform: translateY(-3px); /* تقليل الحركة الرأسية */
+box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.3),
+inset 0px -3px 0px 0px rgba(0, 0, 0, 0.30), 
+0px 0px 0px 3px rgba(255, 255, 255, 0.30),
+0px 0px 50px 0px #9917FF; 
+transform: translateY(-3px); 
 }
 
 
@@ -309,7 +343,7 @@ transform: scale(1.2);
 } 
 table {
     width: 100%;
-    table-layout: fixed; /* تأكد من أن الجدول يشغل العرض الكامل */
+    table-layout: fixed; 
     border-collapse: separate;
     border-spacing: 0;
     background-color: var(--card-background);
@@ -320,8 +354,8 @@ table {
 }
     .notes-container, .table-container {
         flex-grow: 1;
-        min-height: auto; /* تأكد من أن الطول يتغير بناءً على المحتوى */
-        overflow: visible; /* تأكد من أن المحتوى يظهر بالكامل */
+        min-height: auto;
+        overflow: visible; 
     }
 
 
@@ -334,7 +368,7 @@ table {
     max-width: 600px;
     padding: 20px;
     padding-bottom: 50px;
-    flex-grow: 1; /* لضمان أن الـ container يمتد بناءً على المحتوى */
+    flex-grow: 1; 
     }
 
 
@@ -367,9 +401,6 @@ tr:last-child td {
 .nav-bar a{
     text-decoration: none;
 }
-/* .nav-bar:hover{
-    box-shadow: 0 0 20px rgba(104, 63, 234, 0.5);
-} */
 
 .nav-item {
     color: white;
@@ -384,7 +415,3 @@ tr:last-child td {
 .nav-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
-
-/* Rest of your existing CSS styles... */
-
-/* Make sure to include all your existing styles here */
