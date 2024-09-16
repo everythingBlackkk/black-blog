@@ -7,6 +7,13 @@
     100% { opacity: 0.1; }
 }
 
+:root {
+    --primary-color: #683FEA;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --card-background: rgba(30, 30, 30, 0.202);
+}
+
 .hover-glow {
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
@@ -74,5 +81,49 @@
 @media (min-width: 1024px) {
     .content-wrapper {
         flex-direction: row;
+    }
+}
+
+
+
+.nav-bar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--card-background);
+    padding: 10px 20px;
+    border-radius: 25px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+
+.nav-item {
+    color: white;
+    padding: 8px 16px;
+    margin: 0 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+    .nav-bar {
+        padding: 8px 12px;
+    }
+
+    .nav-item {
+        padding: 6px 12px;
+        font-size: 12px;
     }
 }
