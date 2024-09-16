@@ -165,7 +165,6 @@ breakTimeInput.addEventListener('change', setInitialTime);
 saveNotesButton.addEventListener('click', saveNotes);
 clearDataButton.addEventListener('click', clearAllData);
 
-// Load today's data if exists
 const today = new Date().toISOString().split('T')[0];
 const historyData = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
 const todayEntry = historyData.find(entry => entry.date === today);
@@ -178,13 +177,3 @@ checkDateChange();
 updateHistoryTable();
 setInitialTime();
 
-// Add event listeners for nav items
-// document.querySelectorAll('.nav-item').forEach(item => {
-//     item.addEventListener('click', function(e) {
-//         e.preventDefault();
-//         document.querySelectorAll('.nav-item').forEach(navItem => navItem.classList.remove('active'));
-//         this.classList.add('active');
-//         // Here you can add logic to change the content based on the clicked nav item
-//         console.log(`Navigating to ${this.textContent}`);
-//     });
-// });
