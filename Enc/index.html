@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <a href="../index.html" class="nav-item">Home page</a>
+            <a href="../HackTimer/index.html" class="nav-item">Hacking Timer</a>
+            <a href="#" class="nav-item">Hacking Timer</a>
+
+        </nav>
+        <h1 id="code-text">Hack Crypto</h1>
+
+        <div class="button-container">
+            <button id="url-button" class="cipher-button url-button" onclick="showDetails('url')">URL Encoder/Decoder</button>
+            <button id="base64-button" class="cipher-button base64-button" onclick="showDetails('base64')">Base64 Encoder/Decoder</button>
+            <button id="utf8-button" class="cipher-button utf8-button" onclick="showDetails('utf8')">UTF-8 Encoder/Decoder</button>
+            <button id="wtf8-button" class="cipher-button wtf8-button" onclick="showDetails('wtf8')">WTF-8 Encoder/Decoder</button>
+            <button id="bacon-button" class="cipher-button bacon-button" onclick="showDetails('bacon')">Bacon's Cipher</button>
+        </div>
+
+        <h2 id="selected-cipher" class="selected-cipher"></h2>
+
+        <div id="url" class="details active">
+            <div class="input-field">
+                <textarea id="url-input" class="input-input" placeholder="Enter text to encode/decode"></textarea>
+                <div class="button-group">
+                    <button onclick="encodeURL()">Encode</button>
+                    <button onclick="decodeURL()">Decode</button>
+                </div>
+            </div>
+            <div id="url-result" class="result hidden"></div>
+        </div>
+
+        <div id="base64" class="details">
+            <div class="input-field">
+                <textarea id="base64-input" class="input-input" placeholder="Enter text to encode/decode"></textarea>
+                <div class="button-group">
+                    <button onclick="encodeBase64()">Encode</button>
+                    <button onclick="decodeBase64()">Decode</button>
+                </div>
+            </div>
+            <div id="base64-result" class="result hidden"></div>
+        </div>
+
+        <div id="utf8" class="details">
+            <div class="input-field">
+                <textarea id="utf8-input" class="input-input" placeholder="Enter text to encode/decode"></textarea>
+                <div class="button-group">
+                    <button onclick="encodeUTF8()">Encode</button>
+                    <button onclick="decodeUTF8()">Decode</button>
+                </div>
+            </div>
+            <div id="utf8-result" class="result hidden"></div>
+        </div>
+
+        <div id="wtf8" class="details">
+            <div class="input-field">
+                <textarea id="wtf8-input" class="input-input" placeholder="Enter text to encode/decode"></textarea>
+                <div class="button-group">
+                    <button onclick="encodeWTF8()">Encode</button>
+                    <button onclick="decodeWTF8()">Decode</button>
+                </div>
+            </div>
+            <div id="wtf8-result" class="result hidden"></div>
+        </div>
+
+        <div id="bacon" class="details">
+            <div class="input-field">
+                <textarea id="bacon-input" class="input-input" placeholder="Enter text to encode/decode"></textarea>
+                <input type="number" id="shift" placeholder="Shift (e.g., 2)">
+                <div class="button-group">
+                    <button onclick="encodeBacon()">Encode</button>
+                    <button onclick="decodeBacon()">Decode</button>
+                </div>
+            </div>
+            <div id="bacon-result" class="result hidden"></div>
+        </div>
+    </div>
+
+    <div class="pattern-bg"></div>
+    <div class="bg-animation">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+        <div id="stars4"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
