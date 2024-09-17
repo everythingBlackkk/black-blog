@@ -5,6 +5,7 @@ let isFocusMode = true;
 let isRunning = false;
 let todayMinutes = 0;
 let alertAudio;
+let startTime;  
 const timerDisplay = document.querySelector('.timer');
 const modeDisplay = document.querySelector('.mode');
 const startStopButton = document.getElementById('startStop');
@@ -25,6 +26,7 @@ function startTimer() {
     if (!isRunning) {
         isRunning = true;
         startStopButton.textContent = 'PAUSE';
+        startTime = Date.now();  
         timer = setInterval(updateTimer, 1000);
     } else {
         isRunning = false;
@@ -63,8 +65,12 @@ function setInitialTime() {
 }
 
 function updateTimer() {
-    if (timeLeft > 0) {
-        timeLeft--;
+    const currentTime = Date.now();
+    const elapsedTime = Math.floor((currentTime - startTime) / 1000);  
+    const newTimeLeft = totalTime - elapsedTime;
+    
+    if (newTimeLeft > 0) {
+        timeLeft = newTimeLeft;
         updateTimerDisplay();
         updateProgressCircle();
         if (isFocusMode && timeLeft % 60 === 0) {
