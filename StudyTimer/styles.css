@@ -349,7 +349,7 @@ table {
     background-color: var(--card-background);
     border-radius: 10px;
     overflow: hidden;
-    margin-top: 10px; 
+    margin-top: 10px; /* تقليل المسافة العلوية */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
     .notes-container, .table-container {
@@ -396,7 +396,6 @@ tr:last-child td {
     border-radius: 25px;
     margin-bottom: 20px;
     transition: 0.1;
-    
 }
 .nav-bar a{
     text-decoration: none;
@@ -409,6 +408,7 @@ tr:last-child td {
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 14;
 }
 
 
@@ -433,8 +433,8 @@ tr:last-child td {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
-    pointer-events: none;
+    z-index: -1; 
+    pointer-events: none; 
 }
 
 #stars {
