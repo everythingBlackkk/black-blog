@@ -1,5 +1,6 @@
 let timer;
-let timeLeft;
+let startTime;
+let pausedTime = 0;
 let totalTime;
 let isFocusMode = true;
 let isRunning = false;
@@ -25,63 +26,70 @@ function startTimer() {
     if (!isRunning) {
         isRunning = true;
         startStopButton.textContent = 'PAUSE';
-        timer = setInterval(updateTimer, 1000);
+        startTime = Date.now() - pausedTime;
+        timer = requestAnimationFrame(updateTimer);
     } else {
         isRunning = false;
         startStopButton.textContent = 'RESUME';
-        clearInterval(timer);
+        pausedTime = Date.now() - startTime;
+        cancelAnimationFrame(timer);
     }
     saveState();
 }
 
 function resetTimer() {
-    clearInterval(timer);
+    cancelAnimationFrame(timer);
     isRunning = false;
     startStopButton.textContent = 'START';
+    pausedTime = 0;
     setInitialTime();
     saveState();
 }
 
 function setInitialTime() {
-    clearInterval(timer);
+    cancelAnimationFrame(timer);
     isRunning = false;
     startStopButton.textContent = 'START';
+    pausedTime = 0;
     
     if (isFocusMode) {
-        timeLeft = focusTimeInput.value * 60;
-        totalTime = timeLeft;
+        totalTime = focusTimeInput.value * 60 * 1000;
         modeDisplay.textContent = 'FOCUS';
     } else {
-        timeLeft = breakTimeInput.value * 60;
-        totalTime = timeLeft;
+        totalTime = breakTimeInput.value * 60 * 1000;
         modeDisplay.textContent = 'BREAK';
     }
     
-    updateTimerDisplay();
-    updateProgressCircle();
+    updateTimerDisplay(totalTime);
+    updateProgressCircle(totalTime, totalTime);
     saveState();
 }
 
 function updateTimer() {
-    if (timeLeft > 0) {
-        timeLeft--;
-        updateTimerDisplay();
-        updateProgressCircle();
-        if (isFocusMode && timeLeft % 60 === 0) {
-            todayMinutes++;
-            updateHistoryTable();
-            saveState();
+    if (isRunning) {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        const remainingTime = Math.max(totalTime - elapsedTime, 0);
+
+        if (remainingTime > 0) {
+            updateTimerDisplay(remainingTime);
+            updateProgressCircle(remainingTime, totalTime);
+            
+            if (isFocusMode && Math.floor(elapsedTime / 60000) > Math.floor((elapsedTime - 1000) / 60000)) {
+                todayMinutes++;
+                updateHistoryTable();
+                saveState();
+            }
+            
+            timer = requestAnimationFrame(updateTimer);
+        } else {
+            if (isFocusMode) {
+                addToHistory();
+            }
+            playAlertSound();
+            isFocusMode = !isFocusMode;
+            setInitialTime();
         }
-    } else {
-        clearInterval(timer);
-        if (isFocusMode) {
-            addToHistory();
-        }
-        playAlertSound();
-        isFocusMode = !isFocusMode;
-        setInitialTime();
-        isRunning = false;
-        startStopButton.textContent = 'START';
     }
 }
 
@@ -89,16 +97,17 @@ function playAlertSound() {
     alertAudio.play();
 }
 
-function updateTimerDisplay() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
+function updateTimerDisplay(remainingTime) {
+    const minutes = Math.floor(remainingTime / 60000);
+    const seconds = Math.floor((remainingTime % 60000) / 1000);
     timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-function updateProgressCircle() {
-    const progress = ((totalTime - timeLeft) / totalTime) * 100;
+function updateProgressCircle(remainingTime, totalTime) {
+    const progress = ((totalTime - remainingTime) / totalTime) * 100;
     progressCircle.style.setProperty('--progress', `${progress}%`);
 }
+
 
 function addToHistory() {
     const today = new Date().toLocaleDateString('en-CA');
@@ -196,13 +205,14 @@ function saveState() {
     localStorage.setItem('pomodoroState', JSON.stringify(state));
 }
 
+// Modify loadState function to work with the new timing system
 function loadState() {
     const savedState = JSON.parse(localStorage.getItem('pomodoroState'));
     const today = new Date().toLocaleDateString('en-CA');
     
     if (savedState && savedState.date === today) {
-        timeLeft = savedState.timeLeft;
         totalTime = savedState.totalTime;
+        pausedTime = savedState.timeLeft;
         isFocusMode = savedState.isFocusMode;
         isRunning = savedState.isRunning;
         todayMinutes = savedState.todayMinutes;
@@ -210,13 +220,14 @@ function loadState() {
         breakTimeInput.value = savedState.breakTime;
         notesInput.value = savedState.notes;
 
-        updateTimerDisplay();
-        updateProgressCircle();
+        updateTimerDisplay(pausedTime);
+        updateProgressCircle(pausedTime, totalTime);
         modeDisplay.textContent = isFocusMode ? 'FOCUS' : 'BREAK';
         startStopButton.textContent = isRunning ? 'PAUSE' : 'START';
         
         if (isRunning) {
-            timer = setInterval(updateTimer, 1000);
+            startTime = Date.now() - (totalTime - pausedTime);
+            timer = requestAnimationFrame(updateTimer);
         }
     } else {
         todayMinutes = 0;
