@@ -5,7 +5,9 @@ let isFocusMode = true;
 let isRunning = false;
 let todayMinutes = 0;
 let alertAudio;
-let startTime;  
+let startTime;
+let lastMinuteChecked = 0;  // New variable to track the last minute we checked
+
 const timerDisplay = document.querySelector('.timer');
 const modeDisplay = document.querySelector('.mode');
 const startStopButton = document.getElementById('startStop');
@@ -73,14 +75,21 @@ function updateTimer() {
         timeLeft = newTimeLeft;
         updateTimerDisplay();
         updateProgressCircle();
-        if (isFocusMode && timeLeft % 60 === 0) {
-            todayMinutes++;
+        
+        // Check if we've entered a new minute
+        const currentMinute = Math.floor((totalTime - timeLeft) / 60);
+        if (isFocusMode && currentMinute > lastMinuteChecked) {
+            todayMinutes += currentMinute - lastMinuteChecked;
+            lastMinuteChecked = currentMinute;
             updateHistoryTable();
             saveState();
         }
     } else {
         clearInterval(timer);
         if (isFocusMode) {
+            // Add any remaining seconds as a fraction of a minute
+            const remainingSeconds = totalTime % 60;
+            todayMinutes += remainingSeconds / 60;
             addToHistory();
         }
         playAlertSound();
@@ -88,6 +97,7 @@ function updateTimer() {
         setInitialTime();
         isRunning = false;
         startStopButton.textContent = 'START';
+        lastMinuteChecked = 0;  // Reset for the next session
     }
 }
 
@@ -112,10 +122,10 @@ function addToHistory() {
     let todayEntry = historyData.find(entry => entry.date === today);
     
     if (todayEntry) {
-        todayEntry.minutes = todayMinutes;
+        todayEntry.minutes = parseFloat(todayEntry.minutes) + parseFloat(todayMinutes);
         todayEntry.notes = notesInput.value;
     } else {
-        historyData.push({ date: today, minutes: todayMinutes, notes: notesInput.value });
+        historyData.push({ date: today, minutes: parseFloat(todayMinutes), notes: notesInput.value });
     }
 
     // Keep only the last 7 days of data
@@ -136,7 +146,7 @@ function updateHistoryTable() {
     // Add today's entry first
     const todayRow = historyTable.insertRow(1);
     todayRow.insertCell(0).textContent = today;
-    todayRow.insertCell(1).textContent = todayMinutes;
+    todayRow.insertCell(1).textContent = todayMinutes.toFixed(2);  // Display with 2 decimal places
     const todayNotesCell = todayRow.insertCell(2);
     todayNotesCell.textContent = notesInput.value;
 
@@ -145,7 +155,7 @@ function updateHistoryTable() {
         if (entry.date !== today) {
             const row = historyTable.insertRow(-1);
             row.insertCell(0).textContent = entry.date;
-            row.insertCell(1).textContent = entry.minutes;
+            row.insertCell(1).textContent = parseFloat(entry.minutes).toFixed(2);  // Display with 2 decimal places
             row.insertCell(2).textContent = entry.notes;
         }
     });
