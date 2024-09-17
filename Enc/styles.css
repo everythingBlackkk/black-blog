@@ -37,17 +37,17 @@ body {
 }
 
 .nav-bar {
-  margin: 0 auto;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--nav-bg-color);
+  background-color: #121212ab;
   padding: 15px;
   border-radius: 30px;
-  margin-bottom: 20px;
-  position: sticky;
-  top: 20px;
   z-index: 1000;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -68,6 +68,11 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
+
+#code-text{
+  margin-top: 8rem;
+}
+
 h1 {
     font-family: "Press Start 2P", system-ui;
     font-size: 2.5em;
@@ -238,6 +243,9 @@ h1 {
     .button-group button {
         font-size: 0.9em;
         padding: 8px 15px;
+    }
+    .nav-bar {
+      font-size: 13px;
     }
 }
 
