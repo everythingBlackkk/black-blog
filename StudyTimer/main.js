@@ -161,7 +161,7 @@ function loadState() {
 // History Management
 function updateHistoryTable() {
     let history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
-    historyTable.innerHTML = '<tr><th>Date</th><th>Minutegf completed</th><th>Notes</th></tr>';
+    historyTable.innerHTML = '<tr><th>Date</th><th>Minute Completed</th><th>Note</th></tr>';
     
     history.forEach(entry => {
         const row = historyTable.insertRow(-1);
