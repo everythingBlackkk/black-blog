@@ -7,6 +7,7 @@ let isFocusMode = true;
 let isRunning = false;
 let todayMinutes = 0;
 let startTime;
+let lastMinuteChecked = 0;
 
 // DOM Elements
 const timerDisplay = document.querySelector('.timer');
@@ -18,6 +19,8 @@ const breakTimeInput = document.getElementById('breakTime');
 const historyTable = document.getElementById('history');
 const notesInput = document.getElementById('notes');
 const saveNotesButton = document.getElementById('saveNotes');
+const clearDataButton = document.getElementById('clearData');
+
 
 // Initialize
 document.addEventListener('DOMContentLoaded', initialize);
@@ -44,11 +47,26 @@ function startTimer() {
     saveState();
 }
 
+function clearAllData() {
+    if (confirm("هل أنت متأكد أنك تريد مسح جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.")) {
+        localStorage.removeItem('pomodoroHistory');
+        localStorage.removeItem('pomodoroState');
+        todayMinutes = 0;
+        lastMinuteChecked = 0;
+        notesInput.value = '';
+        setInitialTime();
+        updateHistoryTable();
+        saveState();
+        alert('تم مسح جميع البيانات بنجاح.');
+    }
+}
+
 function resetTimer() {
     clearInterval(timer);
     isRunning = false;
     startStopButton.textContent = 'START';
     setInitialTime();
+    lastMinuteChecked = 0;
     saveState();
 }
 
@@ -64,10 +82,21 @@ function updateTimer() {
     const elapsed = Math.floor((now - startTime) / 1000);
     timeLeft = Math.max(totalTime - elapsed, 0);
 
+    if (isFocusMode) {
+        const currentMinute = Math.floor((totalTime - timeLeft) / 60);
+        if (currentMinute > lastMinuteChecked) {
+            todayMinutes += currentMinute - lastMinuteChecked;
+            lastMinuteChecked = currentMinute;
+            saveState();
+            updateHistoryTable();
+        }
+    }
+
     if (timeLeft === 0) {
         clearInterval(timer);
         if (isFocusMode) {
-            todayMinutes += totalTime / 60;
+            // Add any remaining seconds
+            todayMinutes += (totalTime % 60) / 60;
             saveState();
             updateHistoryTable();
         }
@@ -75,6 +104,7 @@ function updateTimer() {
         setInitialTime();
         isRunning = false;
         startStopButton.textContent = 'START';
+        lastMinuteChecked = 0;
     }
 
     updateTimerDisplay();
@@ -97,7 +127,8 @@ function saveState() {
         focusTime: focusTimeInput.value,
         breakTime: breakTimeInput.value,
         startTime: startTime,
-        lastUpdate: Date.now()
+        lastUpdate: Date.now(),
+        lastMinuteChecked
     };
     localStorage.setItem('pomodoroState', JSON.stringify(state));
 }
@@ -105,7 +136,7 @@ function saveState() {
 function loadState() {
     const savedState = JSON.parse(localStorage.getItem('pomodoroState'));
     if (savedState) {
-        ({timeLeft, totalTime, isFocusMode, isRunning, todayMinutes, startTime} = savedState);
+        ({timeLeft, totalTime, isFocusMode, isRunning, todayMinutes, startTime, lastMinuteChecked} = savedState);
         focusTimeInput.value = savedState.focusTime;
         breakTimeInput.value = savedState.breakTime;
         
@@ -130,7 +161,7 @@ function loadState() {
 // History Management
 function updateHistoryTable() {
     let history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
-    historyTable.innerHTML = '<tr><th>Date</th><th>Minutessa Completed</th><th>Notes</th></tr>';
+    historyTable.innerHTML = '<tr><th>Date</th><th>Minutegf completed</th><th>Notes</th></tr>';
     
     history.forEach(entry => {
         const row = historyTable.insertRow(-1);
@@ -138,6 +169,13 @@ function updateHistoryTable() {
         row.insertCell(1).textContent = entry.minutes.toFixed(2);
         row.insertCell(2).textContent = entry.notes;
     });
+
+    // Update today's minutes in the first row
+    if (history.length > 0) {
+        history[0].minutes = todayMinutes;
+        localStorage.setItem('pomodoroHistory', JSON.stringify(history));
+        historyTable.rows[1].cells[1].textContent = todayMinutes.toFixed(2);
+    }
 }
 
 function checkAndAddNewDay() {
@@ -151,6 +189,7 @@ function checkAndAddNewDay() {
         }
         localStorage.setItem('pomodoroHistory', JSON.stringify(history));
         todayMinutes = 0;
+        lastMinuteChecked = 0;
         saveState();
         updateHistoryTable();
     }
@@ -174,6 +213,7 @@ resetButton.addEventListener('click', resetTimer);
 focusTimeInput.addEventListener('change', setInitialTime);
 breakTimeInput.addEventListener('change', setInitialTime);
 saveNotesButton.addEventListener('click', saveNotes);
+clearDataButton.addEventListener('click', clearAllData); 
 
 // Check for new day every minute
 setInterval(checkAndAddNewDay, 60000);
