@@ -30,10 +30,14 @@ function startTimer() {
         startStopButton.textContent = 'PAUSE';
         startTime = Date.now() - (totalTime - timeLeft) * 1000;
         timer = setInterval(updateTimer, 1000);
+        // حفظ وقت البدء في التخزين المحلي
+        localStorage.setItem('timerStartTime', startTime.toString());
     } else {
         isRunning = false;
         startStopButton.textContent = 'RESUME';
         clearInterval(timer);
+        // إزالة وقت البدء من التخزين المحلي عند إيقاف المؤقت
+        localStorage.removeItem('timerStartTime');
     }
     saveState();
 }
@@ -43,6 +47,7 @@ function resetTimer() {
     isRunning = false;
     startStopButton.textContent = 'START';
     setInitialTime();
+    localStorage.removeItem('timerStartTime');
     saveState();
 }
 
@@ -76,10 +81,11 @@ function updateTimer() {
         updateTimerDisplay();
         updateProgressCircle();
         
-        // Check if we've entered a new minute
+        // التحقق مما إذا دخلنا دقيقة جديدة
         const currentMinute = Math.floor((totalTime - timeLeft) / 60);
         if (isFocusMode && currentMinute > lastMinuteChecked) {
-            todayMinutes += currentMinute - lastMinuteChecked;
+            const minutesAdded = currentMinute - lastMinuteChecked;
+            todayMinutes += minutesAdded;
             lastMinuteChecked = currentMinute;
             updateHistoryTable();
             saveState();
@@ -87,7 +93,7 @@ function updateTimer() {
     } else {
         clearInterval(timer);
         if (isFocusMode) {
-            // Add any remaining seconds as a fraction of a minute
+            // إضافة أي ثوانٍ متبقية كجزء من دقيقة
             const remainingSeconds = totalTime % 60;
             todayMinutes += remainingSeconds / 60;
             updateHistoryTable();
@@ -97,7 +103,8 @@ function updateTimer() {
         setInitialTime();
         isRunning = false;
         startStopButton.textContent = 'START';
-        lastMinuteChecked = 0;  // Reset for the next session
+        lastMinuteChecked = 0;  // إعادة تعيين للجلسة التالية
+        localStorage.removeItem('timerStartTime');
     }
 }
 
@@ -128,35 +135,35 @@ function saveNotes() {
         historyData.push({ date: today, minutes: parseFloat(todayMinutes.toFixed(2)), notes: notesInput.value });
     }
 
-    // Keep only the last 7 days of data
+    // الاحتفاظ فقط بآخر 7 أيام من البيانات
     historyData = historyData.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 7);
 
     localStorage.setItem('pomodoroHistory', JSON.stringify(historyData));
     updateHistoryTable();
     
-    // Clear the notes input after saving
+    // مسح محتوى حقل الملاحظات بعد الحفظ
     notesInput.value = '';
     
-    alert('Notes saved successfully!');
+    alert('تم حفظ الملاحظات بنجاح!');
     saveState();
 }
 
 function updateHistoryTable() {
     const historyData = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
     const today = new Date().toLocaleDateString('en-CA');
-    historyTable.innerHTML = '<tr><th>Date</th><th>Minutes Completed</th><th>Notes</th></tr>';
+    historyTable.innerHTML = '<tr><th>Date</th><th>Total M </th><th>Notes</th></tr>';
     
-    // Sort the history data by date in descending order
+    // ترتيب بيانات السجل حسب التاريخ بترتيب تنازلي
     historyData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Add today's entry first
+    // إضافة سجل اليوم أولاً
     const todayRow = historyTable.insertRow(1);
     todayRow.insertCell(0).textContent = today;
     todayRow.insertCell(1).textContent = todayMinutes.toFixed(2);
     const todayNotesCell = todayRow.insertCell(2);
     todayNotesCell.textContent = historyData.find(entry => entry.date === today)?.notes || '';
 
-    // Add previous days
+    // إضافة الأيام السابقة
     historyData.forEach(entry => {
         if (entry.date !== today) {
             const row = historyTable.insertRow(-1);
@@ -185,10 +192,11 @@ function checkDateChange() {
 }
 
 function clearAllData() {
-    if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+    if (confirm("هل أنت متأكد أنك تريد مسح جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.")) {
         localStorage.removeItem('pomodoroHistory');
         localStorage.removeItem('lastDate');
         localStorage.removeItem('pomodoroState');
+        localStorage.removeItem('timerStartTime');
         todayMinutes = 0;
         notesInput.value = '';
         updateHistoryTable();
@@ -229,13 +237,34 @@ function loadState() {
         startStopButton.textContent = isRunning ? 'PAUSE' : 'START';
         
         if (isRunning) {
-            startTime = Date.now() - (totalTime - timeLeft) * 1000;
-            timer = setInterval(updateTimer, 1000);
+            const savedStartTime = localStorage.getItem('timerStartTime');
+            if (savedStartTime) {
+                startTime = parseInt(savedStartTime);
+                const currentTime = Date.now();
+                const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+                timeLeft = Math.max(totalTime - elapsedTime, 0);
+                
+                if (timeLeft > 0) {
+                    timer = setInterval(updateTimer, 1000);
+                } else {
+                    // إذا انتهى الوقت أثناء إغلاق المتصفح، قم بإعادة تعيين المؤقت
+                    clearInterval(timer);
+                    isRunning = false;
+                    startStopButton.textContent = 'START';
+                    isFocusMode = !isFocusMode;
+                    setInitialTime();
+                }
+            } else {
+                // إذا لم يتم العثور على وقت البدء، قم بإعادة تعيين الحالة
+                isRunning = false;
+                startStopButton.textContent = 'START';
+            }
         }
     } else {
         todayMinutes = 0;
         setInitialTime();
     }
+    updateHistoryTable();
 }
 
 startStopButton.addEventListener('click', startTimer);
