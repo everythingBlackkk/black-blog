@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IDOR Vulnerability Discovery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="../../Media/logo.png" type="image/x-icon" sizes="64x64">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="IDOR1.css">
+</head>
+<body class="custom-bg text-white font-sans">
+    <div class="flex">
+        <!-- Left Section -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="../../Media/everythingBlackkk.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400">penetration tester | Red Team</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=snpxblack2006@gmail.com">
+                    <button class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-email text-sm md:text-base">
+                        Email me
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Section (Article Content) -->
+        <div class="right-section">
+            <div class="Sahm">
+                <a href="../../index.html" class="home-btn" style="font-size: 24px; display: flex; align-items: center;">
+                    <div style="background-color: rgba(128, 128, 128, 0.6); border-radius: 12px; padding: 10px 20px; display: flex; align-items: center; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);">
+                        <span style="font-size: 24px;">Home Page</span>
+                        <a href="../../index.html" style="margin-left: 10px; display: flex; align-items: center;">
+                            <div style="background-color: gray; border-radius: 50%; padding: 5px; display: flex; justify-content: center; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="content-wrapper">
+                <h1 class="text-4xl font-bold mb-6">How I Discovered an IDOR Vulnerability and Fixed It</h1>
+                
+                <div class="mb-8">
+                    <p class="mb-4">
+                        I’m a senior high school student, and like many others in my situation, I tend to do anything other than study. Instead of watching lectures on the educational platform, I found myself searching for vulnerabilities in the platform without causing any harm. I performed all the testing manually, without using tools, because it’s an educational platform, and tools might cause damage. Whenever I found a vulnerability, I responsibly reported it, and the people managing the platform were understanding and appreciative.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <p class="mb-4">
+                        One day, I discovered two vulnerabilities on the platform, which I’ll describe in detail, explaining how they occurred and how developers can fix them. I’ll also provide code examples before and after fixing the vulnerabilities to prevent exploitation on websites. I won’t mention the platform’s name since they haven’t blocked me.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">What Did the Developer Do Wrong?</h2>
+                    <p class="mb-4">The developer made a few key mistakes that left the website vulnerable:</p>
+                    <ul class="list-disc ml-8">
+                        <li class="mb-2">The developer didn’t ensure that the person requesting the grades was the account owner.</li>
+                        <li class="mb-2">The developer relied on a number in the URL to identify the user, which allowed anyone to change the number and access someone else’s data.</li>
+                        <li>The developer didn’t encrypt the sensitive identifiers (IDs) in the URL.</li>
+                    </ul>
+                </div>
+
+                <img src="IDOR-photo.jpeg" alt="IDOR vulnerability example">
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">How Can We Fix This Issue?</h2>
+                    <p class="mb-4">To secure the website and prevent this vulnerability, developers should:</p>
+                    <ul class="list-disc ml-8">
+                        <li class="mb-2">Store the user’s identity in a session and verify permissions with every request.</li>
+                        <li class="mb-2">Ensure that the data being requested belongs to the user making the request.</li>
+                        <li>Encrypt any necessary identifiers in the URL to prevent guessing or modification.</li>
+                    </ul>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">Before Fixing the Vulnerability</h2>
+                    <pre><code class="language-php">
+// Vulnerable Code
+$id = $_GET['id'];
+$query = "SELECT grade FROM grades WHERE user_id = $id";
+$result = mysqli_query($conn, $query);
+$row = mysqli_fetch_assoc($result);
+echo "Your grade is: " . $row['grade'];
+                    </code></pre>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">After Fixing the Vulnerability</h2>
+                    <pre><code class="language-php">
+// Secure Code
+session_start();
+$user_id = $_SESSION['user_id'];
+$query = "SELECT grade FROM grades WHERE user_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    echo "Your grade is: " . $row['grade'];
+} else {
+    echo "You are not authorized to view this grade.";
+}
+                    </code></pre>
+                </div>
+                <h1>Mady By ❤ everythingBlackkk</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="pattern-bg"></div>
+</body>
+</html>
