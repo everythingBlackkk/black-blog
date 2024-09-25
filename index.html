@@ -7,15 +7,37 @@
     <title>everythingBlackkk</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <link rel="icon" href="Media/logo.png" type="image/x-icon" sizes="64x64">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/Media/stars.css">
+
 </head>
 <body class="custom-bg text-white font-sans">
+
     <nav class="nav-bar">
-        <a href="#" class="nav-item">Home Page</a>
-        <a href="StudyTimer/index.html" class="nav-item">Hacking timer</a>
-        <a href="Enc/index.html" class="nav-item">Encryption</a>
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home Page</span>
+        </a>
+        <!--  
+        <a href="HackTimer/index.html" class="nav-item">
+            <i class="fas fa-clock"></i>
+
+            <span>HackTimer</span>
+        </a>
+        -->
+        <a href="Enc/index.html" class="nav-item">
+            <i class="fas fa-key"></i>
+            <span>Encryption</span>
+        </a>
+        <a href="HackDorks/index.html" class="nav-item">
+            <i class="fab fa-google"></i>
+            <!-- <i class="fas fa-search"></i> -->
+            <span>Google Dorks</span>
+        </a>
     </nav>
+
     <div class="content-wrapper">
         <!-- Left Section -->
         <div class="lg:w-1/2 flex flex-col justify-start items-center p-8 lg:fixed lg:left-0 lg:top-0 lg:h-screen lf" >
@@ -53,7 +75,7 @@
                     <p class="text-gray-400 mb-4 text-sm md:text-base">
                         I have experience in developing websites and doing full penetration testing on them, covering all levels of risk , not just the easy ones. I know scripting languages like BASH and Python, and I'm currently making tools with them. I also have skills in CTF (Capture The Flag) challenges and Bug Bounty programs. I'm familiar with tools like Burp Suite and Metasploit, and I'm very good at using Linux, which is my main operating system. I'm also passionate about cryptography, and I enjoy creating articles and tools related to it . My goal is to achieve this before I turn 20. I am currently 18 years old and striving to reach my goal of working for major companies, with hopes of starting at iexperts
                     </p>
-                    <a href="Yassin-Mohamed.pdf" target="_blank" class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-cv text-sm md:text-base">
+                    <a href="Media/Yassin-Mohamed.pdf" target="_blank" class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-cv text-sm md:text-base">
                         My CV
                     </a>
                 </div>
@@ -74,6 +96,38 @@
                         </svg>
                     </div>
                 </div>
+
+                <div class="mb-8 hover-glow p-4 rounded-lg relative group" onclick="window.location.href='writeups/Asym-Enc/Asym-Enc.html'" style="cursor: pointer;">
+                    <h2 class="text-lg md:text-xl font-bold mb-2">Asymmetric Encryption</h2>
+                    <p class="text-gray-400 mb-2 text-sm">June 2024 — Present</p>
+                    <p class="text-sm md:text-base">Understanding Asymmetric Encryption with Simple Examples....</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <span class="bg-gray-700 text-xs md:text-sm px-3 py-1 rounded-full">Encryption</span>
+                        <span class="bg-gray-700 text-xs md:text-sm px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-gray-700 text-xs md:text-sm px-3 py-1 rounded-full">SSH</span>
+                    </div>
+                    <div class="arrow-link hidden absolute top-2 right-2 bg-gray-200 p-2 rounded-full group-hover:flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="mb-8 hover-glow p-4 rounded-lg relative group" onclick="window.location.href='writeups/IDOR1/IDOR1.html'" style="cursor: pointer;">
+                    <h2 class="text-lg md:text-xl font-bold mb-2">Idor Vulnerability </h2>
+                    <p class="text-gray-400 mb-2 text-sm">Agust 2024 — Present</p>
+                    <p class="text-sm md:text-base">How I Discovered an IDOR Vulnerability and Fixed It....</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <span class="bg-gray-700 text-xs md:text-sm px-3 py-1 rounded-full">IDOR</span>
+                        <span class="bg-gray-700 text-xs md:text-sm px-3 py-1 rounded-full">web Attcks</span>
+                    </div>
+                    <div class="arrow-link hidden absolute top-2 right-2 bg-gray-200 p-2 rounded-full group-hover:flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
