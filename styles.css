@@ -1,6 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
 @keyframes fadeInPattern {
     0% { opacity: 0; }
     100% { opacity: 1; }
+}
+body{
+    font-family: "Cairo", sans-serif;
 }
 @keyframes fadeInPattern2 {
     0% { opacity: 0; }
