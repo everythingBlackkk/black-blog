@@ -26,6 +26,17 @@
             text-align: left;
             unicode-bidi: bidi-override;
         }
+        .important-text {
+            color: #3498db;
+            font-weight: bold;
+        }
+        .section-spacing {
+            margin-bottom: 3rem;
+        }
+        .image-spacing {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
     </style>
 </head>
 <body class="custom-bg text-white font-sans">
@@ -49,13 +60,14 @@
             
             <div class="content-wrapper">
                 <h1 class="text-4xl font-bold mb-6">TryHackMe: Brains</h1>              
-                <div class="mb-8">
+                
+                <div class="section-spacing">
                     <p class="mb-4">
-                        التحدي ده فيه جزئين كويسين وهما جزء الـoffensive و جزء الـdefender. خلونا نبدأ ونشوف سوا
+                        التحدي ده فيه جزئين كويسين وهما <span class="important-text">جزء الـoffensive و جزء الـdefender</span>. خلونا نبدأ ونشوف سوا
                     </p>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">جزء الـoffensive:</h2>
                     <p class="mb-4">
                         كالعادة هنحتاج إننا نشوف الـport والـservice الموجودة في الـtarget. هنروح على Nmap ونشوف ده:
@@ -90,12 +102,10 @@ PORT      STATE SERVICE  VERSION
 |     Authentication required
 |     login manually go to "/login.html" page
 ...
-
                     </code></pre>
-
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">هنلاقي 3 port مفتوحة و service عليهم:</h2>
                     <ul class="list-disc mr-8">
                         <li class="mb-2">22 (SSH)</li>
@@ -104,21 +114,20 @@ PORT      STATE SERVICE  VERSION
                     </ul>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">تعالوا نشوف port 80:</h2>
-                    <img src="1.PNG" alt="">
+                    <img src="1.PNG" alt="" class="image-spacing">
                     <p class="mb-4">هنلاقي إن مفيش حاجة مهمة تقريبًا، مفيش غير message.</p>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">تعالوا نشوف port 50000:</h2>
-                    <img src="2.PNG" alt="">
+                    <img src="2.PNG" alt="" class="image-spacing">
                     <p class="mb-4">
-                        
-                        هنلاقي في <span class="ltr">http://10.10.143.133:50000</span> موجود TeamCity Version 2023.11.3 (build 147512) وكالعادة من الحاجات المهمة إننا نشوف لو كان فيه vulnerabilities قديمة للإصدار ده علشان نستغلها إننا نعمل authentication bypass.
+                        هنلاقي في <span class="ltr important-text">http://10.10.143.133:50000</span> موجود TeamCity Version 2023.11.3 (build 147512) وكالعادة من الحاجات المهمة إننا نشوف لو كان فيه vulnerabilities قديمة للإصدار ده علشان نستغلها إننا نعمل authentication bypass.
                     </p>
                     <p class="mb-4">
-                        بعد شوية تدوير لقينا فعلاً إن فيه (CVE-2024-27198 and CVE-2024-27199) ولو قريت شوية عن الـCVE دي هتلاقي إننا ممكن يكون معانا RCE.
+                        بعد شوية تدوير لقينا فعلاً إن فيه <span class="important-text">(CVE-2024-27198 and CVE-2024-27199)</span> ولو قريت شوية عن الـCVE دي هتلاقي إننا ممكن يكون معانا RCE.
                     </p>
                     <p class="mb-4">
                         دلوقتي عايزك تروح تدور على exploit ليها وتعالى تاني، اعتمد على نفسك :)
@@ -127,30 +136,27 @@ PORT      STATE SERVICE  VERSION
                         خلصت؟
                     </p>
                     <p class="mb-4">
-                    </p>
-                    <p class="mb-4">
                         تعالوا نحاول نستغله:
                         بالأمر ده:
                     </p>
                     <pre dir="ltr" class="code mb-4"><code class="language-bash">python3 CVE-2024-27198-RCE/CVE-2024-27198-RCE.py -t http://10.10.143.133:50000</code></pre>
 
-                    <img src="3.PNG" alt="">
+                    <img src="3.PNG" alt="" class="image-spacing">
 
-                    <img src="" alt="">
                     <p class="mb-4">
-                        دلوقتي بقى معانا RCE على النظام ونقدر نقرا الـFlag.
+                        دلوقتي بقى معانا <span class="important-text">RCE على النظام</span> ونقدر نقرا الـFlag.
                         طبعًا مش هقولك إيه هو، شوف إنت بنفسك.
                     </p>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">الجزء الثاني defender:</h2>
                     <p class="mb-4">
                         معظم تحديات TryHackMe أو الـCTF عامةً بتركز على الخطوات دي كلها بس مش بنفس الشكل، الطريقة بتختلف من نظام للتاني على حسب بس افتكر إن كلهم بنفس الفكرة وتحديات الـCTF عامةً بتبقى مش زي الواقع بالظبط، بس هي قوية فعلاً وهتعلمك حاجات كتير.
                     </p>
                     <p class="mb-4">
                         المهم
-                        هنلاقي port 8000 مفتوح لـService اسمها "Splunk"
+                        هنلاقي <span class="important-text">port 8000 مفتوح لـService اسمها "Splunk"</span>
                         دي Tool بتساعد إن احنا نراقب ونحلل بيانات زي الـLog File وكدا.
                         هسألك سؤال دلوقتي، جه في بالك حاجة؟؟
                         فكر كدا؟
@@ -161,44 +167,44 @@ PORT      STATE SERVICE  VERSION
                         <li>إيه اسم الـmalicious package اللي اتنزلت على الـServer؟</li>
                         <li>إيه اسم plugin اللي اتنزلت على الـServer؟</li>
                     </ol>
-                    <img src="4.PNG" alt="">
+                    <img src="4.PNG" alt="" class="image-spacing">
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">1 - أول سؤال:</h2>
                     <p class="mb-4">
                         بالنسبة لاسم الـuser ممكن نكتب الأمر ده علشان نشوف كل الـusers اللي حصلهم Add وأكيد الـHacker ضاف نفسه أول ما اخترق النظام:
                     </p>
                     <pre dir="ltr" class="code mb-4"><code class="language-splunk">index* = "useradd"</code></pre>
-                    <img src="5.PNG" alt="">
+                    <img src="5.PNG" alt="" class="image-spacing">
                     <p class="mb-4">
                         أو ممكن نشوف في ملف إنت عارفه كويس
                         عرفته؟؟
                         عارف إن جه في بالك :)
-                        مش احنا ممكن نشوف الـ <span class="ltr">/var/log/auth.log</span> ؟؟
+                        مش احنا ممكن نشوف الـ <span class="ltr important-text">/var/log/auth.log</span> ؟؟
                         لو متعرفش ده إيه ف ده الملف ده بيسجل محاولات تسجيل الدخول، سواء اللي نجحت أو اللي فشلت وحاجات تانية شارحها في مقال تاني متنساش تشوفه.
                     </p>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">2 - تاني سؤال:</h2>
                     <p class="mb-4">
                         إيه اسم الـmalicious package اللي اتنزلت على الـServer؟
                     </p>
                     <pre dir="ltr" class="code mb-4"><code class="language-splunk">source="/var/log/dpkg.log" "install"</code></pre>
-                    <img src="6.PNG" alt="">
+                    <img src="6.PNG" alt="" class="image-spacing">
                     <p class="mb-4">
                         زي ما احنا شايفين في الصورة إننا شوفنا إيه هي الـmalicious package وهسيبك برضو إنت تدور بنفسك.
                     </p>
                 </div>
 
-                <div class="mb-8">
+                <div class="section-spacing">
                     <h2 class="text-2xl font-bold mb-4">3 - تالت سؤال:</h2>
                     <p class="mb-4">
                         إيه اسم plugin اللي اتنزلت على الـServer؟
                         نفس الموضوع اللي فات بالظبط هنستخدم الـCommand ده علشان نقدر نجيب كل الـplugin اللي حصلها upload:
                     </p>
-                    <img src="7.PNG" alt="">
+                    <img src="7.PNG" alt="" class="image-spacing">
                     <pre dir="ltr" class="code mb-4"><code class="language-splunk">source="/opt/teamcity/*" "plugin" "upload"</code></pre>
                     <p class="mb-4">
                         بالنسبة لملف الـopt ف ده بيكون فيه كل التطبيقات اللي مش تبع النظام نفسه وهي اختصار لـ "optional"، وبنستخدمه علشان نحمل فيه التطبيقات اللي مش جاية مع النظام نفسه، وهسيبك تدور بنفسك.
@@ -206,7 +212,7 @@ PORT      STATE SERVICE  VERSION
                     </p>
                 </div>
 
-                <h1 class="text-center">Made By ❤ everythingBlackkk</h1>
+                <h1 class="text-center mt-8">Made By ❤ everythingBlackkk</h1>
             </div>
         </div>
 
