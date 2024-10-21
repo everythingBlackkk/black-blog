@@ -1,10 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
 @keyframes fadeInPattern {
     0% { opacity: 0; }
     100% { opacity: 1; }
-}
-body{
-    font-family: "Cairo", sans-serif;
 }
 @keyframes fadeInPattern2 {
     0% { opacity: 0; }
@@ -135,4 +131,12 @@ body{
     .nav-item span {
         display: none;
     }
+}
+
+.gradient-text-silver-white {
+    background: linear-gradient(to right, #C0C0C0, #FFFFFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
 }
