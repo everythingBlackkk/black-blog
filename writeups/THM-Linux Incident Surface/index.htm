@@ -1,1 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Linux Incident Surface | THM </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="../../Media/logo.png" type="image/x-icon" sizes="64x64">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="Linux-Incident.css">
+    <style>
+        body {
+            /* background-color: black; */
+            direction: rtl;
+            text-align: right;
+        }
+        .ltr {
+            direction: ltr;
+            text-align: left;
+        }
+        .code {
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: bidi-override;
+        }
+        .important-text {
+            color: #3498db;
+            font-weight: bold;
+        }
+        .section-spacing {
+            margin-bottom: 3rem;
+        }
+        .image-spacing {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <div class="flex">
+        <!-- Right Section -->
 
+        
+        <div class="right-section flex-grow p-8">
+
+            <div class="content-wrapper max-w-3xl mx-auto">
+                <div class="Sahm">
+                    <a href="../../index.html" class="home-btn" style="font-size: 24px; display: flex; align-items: center;">
+                        <div style="background-color: rgba(128, 128, 128, 0.6); border-radius: 12px; padding: 10px 20px; display: flex; align-items: center; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);">
+                            <span style="font-size: 24px;">Home Page</span>
+                            <a href="../../index.html" style="margin-right: 10px; display: flex; align-items: center;">
+                                <div style="background-color: gray; border-radius: 50%; padding: 5px; display: flex; justify-content: center; align-items: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                </div>
+                            </a>
+                        </div>
+                    </a>
+                </div>
+                <h1 class="text-4xl font-bold mb-8">Linux Incident Surface | THM</h1>
+
+                <div class="section-spacing">
+                    <p class="mb-4">
+                        العمليات والتواصل الشبكي هما جزئين مهمين في أي نظام تشغيل لما نحقق في أي حادثة. مراقبة وتحليل العمليات، بالذات اللي بتتواصل عبر الشبكة، مهمة جدًا في التحقيق في الحوادث.
+                    </p>
+
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">النشاط #1: إنشاء وتشغيل عملية بسيطة</h2>
+                    <p class="mb-4">
+                        في الدليل "/home/activities/processes"، فيه كود اسمه simple.c، الكود ده بيشتغل على النظام لما يتنفذ. الـ Hacker هيجمع الكود ويشغله، وبعدها هنحاول نلاقي آثاره في النظام.
+                    </p>
+                    <p class="mb-4 important-text">
+                        ملحوظة: لازم نعرف إن كل الأوامر اللي بنشغلها هنا هتكون باستخدام المستخدم "root". شغل الأمر `sudo su` عشان تغير المستخدم من الافتراضي لـ root.
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">1) تجميع الكود</h3>
+                    <p class="mb-4">
+                        هنشغل الأمر ده عشان نجمع الكود وننشئ برنامج قابل للتنفيذ:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">gcc simple.c -o /tmp/simple</code></pre>
+                    <p class="mb-4">
+                        الأمر ده هيعمل ملف تنفيذي اسمه "simple" في نفس الدليل.
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">root@tryhackme:/home/activities/processes# gcc simple.c -o /tmp/simple 
+root@tryhackme:/home/activities/processes# /tmp/simple</code></pre>
+                    <p class="mb-4">
+                        دلوقتي بعد ما جمعنا البرنامج وشغلناه من الدليل "/tmp/"، هنخلي العملية شغالة ونفتح نافذة تانية. دلوقتي هنشوف إزاي نلاقي آثار النشاط ده اللي ممكن نصنفه كحادثة.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h3 class="text-xl font-bold mb-2">2) اكتشاف الآثار</h3>
+                    <p class="mb-4">
+                        هنستخدم أداة ps عشان نراجع العمليات اللي شغالة على لينكس. الأداة دي بتعرض لقطة للعمليات اللي شغالة حاليًا:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">ps aux</code></pre>
+                    <img src="1.png" alt="PS AUX Output" class="image-spacing">
+                    <p class="mb-4">
+                        ده بيعرض لقطة للعمليات اللي شغالة، وهنحاول نحدد العملية اللي شكلها مريب. الأمر اللي استخدمناه فوق بيتقسم بالشكل ده:
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><code>ps aux</code>: ده الأمر اللي بيعرض كل العمليات لكل المستخدمين في تنسيق مفصل. العلامات اللي في الأمر موضحة تحت:</li>
+                        <li>a: بيعرض العمليات لكل المستخدمين.</li>
+                        <li>u: بيعرض العمليات بشكل موجه للمستخدم (بيشمل المستخدم ووقت البدء).</li>
+                        <li>x: بيعرض العمليات اللي مش مرتبطة بترمينال (مفيد عشان نلاقي العمليات اللي شغالة في الخلفية).</li>
+                    </ul>
+                    <p class="mb-4">
+                        خلينا نصفي النتيجة عشان تعرض تفاصيل عن العملية البسيطة اللي شغلناها:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">ps aux | grep simple</code></pre>
+                    <img src="2.png" alt="PS AUX Filtered Output" class="image-spacing">
+                    <p class="mb-4">
+                        ده هيعرض لنا معلومات عن:
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>USER</strong>: المستخدم اللي بيملك العملية.</li>
+                        <li><strong>PID</strong>: رقم تعريف العملية.</li>
+                        <li><strong>%CPU</strong>: نسبة استهلاك المعالج.</li>
+                        <li><strong>%MEM</strong>: نسبة استهلاك الذاكرة.</li>
+                        <li><strong>VSZ</strong>: حجم الذاكرة الافتراضية.</li>
+                        <li><strong>RSS</strong>: الحجم الفعلي للذاكرة المستخدمة حاليًا.</li>
+                        <li><strong>TTY</strong>: الترمينال المرتبط بالعملية.</li>
+                        <li><strong>STAT</strong>: حالة العملية (زي R لو العملية شغالة، S لو نايمة، Z لو ميتة).</li>
+                        <li><strong>START</strong>: وقت بدء العملية.</li>
+                        <li><strong>COMMAND</strong>: الأمر اللي بدأ العملية.</li>
+                    </ul>
+                    <p class="mb-4">
+                        نراجع الملفات أو الموارد المرتبطة بالعملية باستخدام أداة <code>lsof</code>. الأداة دي محتاجة رقم تعريف العملية (PID) عشان تشتغل، ولأننا عارفين إن رقم العملية الخاصة ببرنامجنا هو 49782، هنشغل الأمر:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">lsof -p 49782</code></pre>
+                    <img src="3.png" alt="LSOF Output" class="image-spacing">
+                    <p class="mb-4">
+                        ده هيعرض لنا الملفات أو المكتبات المشتركة المرتبطة بالعملية.
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>الـ<code>lsof</code> الأمر ده بيعرض معلومات عن الملفات اللي مفتوحة بواسطة العمليات.</li>
+                        <li>الـ<code>-i</code> اده بيظهر معلومات عن الاتصالات الشبكية، بما فيها السوكيتس والملفات الشبكية المفتوحة.</li>
+                        <li>الـ<code>-p</code> بيظهر البورت المفتوحه</li>
+                        <li>الـ<code>-n</code> بيظهر عنوان الـIP</li>
+                    </ul>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">استخدام Osquery</h2>
+                    <p class="mb-4">
+                        هنستخدم أداة مفيدة تانية اسمها <strong>osquery</strong> عشان نستكشف العمليات واتصالاتها بالشبكة. عشان نبدأ osquery، افتح ترمينال جديد واكتب الأمر كـ <strong>root user</strong>:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">osqueryi</code></pre>
+                    <p class="mb-4">
+                        ممكن نستخدم osquery كمان عشان نضيق النتائج ونعرض الاتصالات الشبكية المرتبطة بـ <strong>PID</strong> معين باستخدام الأمر التالي:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-sql">SELECT pid, fd, socket, local_address, remote_address FROM process_open_sockets WHERE pid = 267490;</code></pre>
+                    <img src="4.png" alt="Osquery Output" class="image-spacing">
+                    <p class="mb-4">
+                        فيه تفاصيل تانيه كتير بالنسبه لي osqueryi و ليها Room على Tryhackme خاص بيها
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">2 - بعد عمليه الاختراق</h2>
+                    <p class="mb-4">
+                        بعد عمليه الاختراق كـ Hacker هيحتاج انه يفضل ع النظام اطول فتره ممكن بطرق مختلفه هنشرحها دلوقتي
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">1 - الطريقه الاولى:</h3>
+                    <p class="mb-4">
+                        اكيد بديهي انك هتحتاج تعمل user جديد ليك على النظام ده طبيعي جدا
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo useradd attacker -G sudo
+sudo passwd attacker
+echo "attacker ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers</code></pre>
+                    <p class="mb-4">
+                        في الاوامر دي احنا بنعمل USER جديد باسم "<span class="important-text">attacker</span>"<br>
+                        بعد كدا هتضيف الحساب ده لي ملف اسمه <code>sudoed</code> اسمه جامد صح ؟ انا برضو قولت كدا :)<br>
+                        المهم ازاي نعمل كدا ؟
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">echo "attacker ALL=(ALL:ALL) ALL" | sudo tee -a /etc/sudoers</code></pre>
+                    <p class="mb-4">
+                        الامر ده المفروض انه هيضيف attacker في الـ <code>etc/sudoers/</code> مع شويه صلاحيات , طب اي هي ؟
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>الـ ALL : ده معناه ان المستخدم يقدر يستخدم صلاحيات الـ sudo على اي جهاز او دومين</li>
+                        <li>الـ (ALL:ALL) ده معناه ان المستخدم يقدر يشغل اوامر باسم اي مستخدم</li>
+                        <li>و بالنسبه لي ملف الـ <code>sudoers</code> ده بيبقا بيحدد مين معاه صلاحيات الsudo</li>
+                    </ul>
+                    <h3 class="text-xl font-bold mb-2">دور الفحص بقا وقتها لو حصل اختراق بنفس الطريقه دي نعمل اي ؟</h3>
+                    <h4 class="text-lg font-bold mb-2">1 - هنفحص ملفات الـ Log</h4>
+                    <p class="mb-4">
+                        اكيد يعني امال هنعمل ايه برايك يعني ؟<br>
+                        المهم انت هتلاقي كل الlog في ملف <code>/var/log/</code><br>
+                        وقتها بقا ممكن نفحص جواه اسمه <code>auth.log</code> , الملف ده هنقدر نشوف منه اي انشطه لعمليات create users مثلا
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>الملف ده بيسجل محاولات تسجيل الدخول، سواء اللي نجحت أو اللي فشلت.</li>
+                        <li>هو ملف مهم جدًا لاكتشاف محاولات الوصول غير المصرح بيها والهجمات اللي بتستخدم القوة الغاشمة (brute-force attacks).</li>
+                        <li>على سبيل المثال، لو لقينا محاولات فاشلة كتير لتسجيل الدخول من عنوان IP غريب أو في أوقات تسجيل دخول غير طبيعية، ده ممكن يشير إلى هجوم بالقوة الغاشمة أو محاولة للوصول غير المصرح بيه.</li>
+                        <li>بيعرض محتوى auth.log.</li>
+                    </ul>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">cat auth.log | grep useradd</code></pre>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">ubuntu@tryhackme:/var/log$ sudo su root@tryhackme:/var/log# cat auth.log | grep useradd 
+Sep 5 21:18:19 tryhackme sudo: ubuntu : TTY=pts/0 ; PWD=/home ; USER=root ; COMMAND=/usr/sbin/useradd attacker -G sudo 
+Sep 5 21:18:19 tryhackme useradd[184928]: new group: name=attacker, GID=1001 
+Sep 5 21:18:19 tryhackme useradd[184928]: new user: name=attacker, UID=1001, GID=1001, home=/home/attacker, shell=/bin/sh, from=/dev/pts/0 
+Sep 5 21:18:45 tryhackme sudo: ubuntu : TTY=pts/0 ; PWD=/home ; USER=root ; COMMAND=/usr/sbin/useradd attacker -G sudo</code></pre>
+                    <p class="mb-4">
+                        لو ركزت في النتايج هتلاقي فعلا ان فيه user attacker اتعمل
+                    </p>
+                    <p class="mb-4">
+                        فيه ملف تاني اسمه <span class="important-text">/etc/passwd</span><br>
+                        الملف ده بيحتوي على معلومات عن حسابات المستخدمين
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">root@tryhackme:/var/log# cat /etc/passwd</code></pre>
+                    <p class="mb-4">
+                        هتلاقي في النتيحه برضو الملف الي لسه عاملينه :
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">kernoops:x:113:65534:Kernel Oops Tracking Daemon,,,:/:/usr/sbin/nologin
+attacker:x:1001:1001::/home/attacker:/bin/sh</code></pre>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">3 - الـ Cron Job</h2>
+                    <p class="mb-4">
+                        واحدة من الطرق اللي المهاجمين بيستخدموها عشان يفضلوا متواجدين على النظام اللي اخترقوه هي الـ <strong>cron jobs</strong>. الـ Cron هو أداة لجدولة المهام بتشتغل على أنظمة زي لينكس، وبتسمح بتشغيل أوامر، سكريبتات، أو برامج بشكل تلقائي في فترات زمنية محددة.
+                    </p>
+                    <p class="mb-4">
+                        عشان نعمل <strong>cron job</strong> ضار، ممكن نعدل ملف الـ crontab أو نستخدم أمر <code>crontab</code> عشان نحرر المهام المجدولة للمستخدم الحالي أو للنظام باستخدام الأمر التالي:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">crontab -e</code></pre>
+                    <p class="mb-4">
+                        ده هيفتح ملف الـ crontab، ومن هنا نقدر نضيف أي مهمة.
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">أمثلة على إدخال في crontab:</h3>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">@reboot /path/to/malicious/script.sh</code></pre>
+                    <p class="mb-4">
+                        الأمر ده هيشغل السكريبت <code>script.sh</code> في كل مرة الجهاز يعمل إعادة تشغيل.
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">* * * * * root /path/to/malicious/script.sh</code></pre>
+                    <p class="mb-4">
+                        الأمر ده هيشغل السكريبت <code>script.sh</code> كل دقيقة بصلاحيات الروت
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">إضافة cron job:</h3>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash"># Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').
+# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+@reboot /path/to/malicious/script.sh</code></pre>
+                    <p class="mb-4">
+                        ممكن نستعرض المسار <code>/var/spool/cron/crontabs/[username]</code> عشان نشوف الـ cronjobs اللي مرتبطة بكل مستخدم، زي ما هو موضح هنا:
+                    </p>
+                    <img src="5.png" alt="Crontab Output" class="image-spacing">
+                    <p class="mb-4">
+                        <strong>عرض دليل <code>/var/spool/cron</code></strong>
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">4 - الخدمات (Services)</h2>
+                    <p class="mb-4">
+                        طريقة تانية عشان المهاجم يفضل متواجد على نظام مخترق هي تثبيت خدمة على سيرفر لينكس. الخدمة دي هتشتغل في الخلفية وتبدأ كل مرة الجهاز يعمل إعادة تشغيل. خلينا نتعلم إزاي نحقق في النشاط ده عن طريق إنشاء خدمة وتثبيتها على القرص، زي ما هو موضح تح��:
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">الخطوة 1: إنشاء ملف الإعدادات</h3>
+                    <p class="mb-4">
+                        نعمل ملف إعدادات للخدمة زي ما هو موضح:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo nano /etc/systemd/system/suspicious.service</code></pre>
+                    <p class="mb-4">
+                        ضيف المحتوى ده لملف الإعدادات:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ini">[Unit]
+Description=Suspicious_Service
+After=network.target
+
+[Service]
+ExecStart=/home/activities/processes/suspicious
+Restart=on-failure
+User=nobody
+Group=nogroup
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+                    <p class="mb-4">
+                        الملف ده هيعمل service وهينفذ العملية اللي في المسار اللي محددينه.
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>الـ<code>ExecStart</code>: بيوضح الأمر اللي هيشغل البرنامج.</li>
+                        <li>الـ<code>Restart=on-failure</code>: معناه إن الخدمة هتعيد التشغيل لو فشلت.</li>
+                        <li>الـ<code>User</code> و<code>Group</code>: بيحددوا المستخدم والمجموعة اللي هتشتغل الخدمة تحتهم.</li>
+                    </ul>
+                    <h3 class="text-xl font-bold mb-2">2 - تفعيل الخدمه</h3>
+                    <p class="mb-4">
+                        اعاده تحميل ملفات النظام :
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo systemctl daemon-reload</code></pre>
+                    <p class="mb-4">
+                        تفعيل الخدمة عشان تبدأ مع كل تشغيل:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo systemctl enable suspicious.service</code></pre>
+                    <p class="mb-4">
+                        تشغيل الخدمة:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo systemctl start suspicious.service</code></pre>
+                    <p class="mb-4">
+                        نقدر نتاكد من حاله service علشان نتاكد انه كل تمام :
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo systemctl status suspicious.service</code></pre>
+                    <img src="6.png" alt="Service Status" class="image-spacing">
+                    <h3 class="text-xl font-bold mb-2">دلوقتي بقا عايزين نعرف نفحص ازاي في الحاله دي ؟</h3>
+                    <p class="mb-4">
+                        دلوقتي بعد ما عرفنا إزاي الـ Hacker ممكن ينزل ويشغل service في الخلفية، خلينا نشوف إزاي نقدر نلاقي آثار الخدمة دي على النظام.
+                    </p>
+                    <h4 class="text-lg font-bold mb-2">فحص المجلدات</h4>
+                    <p class="mb-4">
+                        كل الخدمات اللي تم تثبيتها وتفعيلها على جهاز Linux هتلاقيها في المسار `/etc/systemd/system`. ممكن تفحص محتويات الديركتوري ده عشان تشوف لو فيه خدمات مشبوهة.
+                    </p>
+                    <img src="7.png" alt="System Services" class="image-spacing">
+                    <p class="mb-4">
+                        نقدر بدأ التحقيق في الحادث عن طريق فحص ملف `syslog` باستخدام الفلتر ده:
+                        نقدر نبدأ التحقيق في الحادث عن طريق فحص ملف `syslog` باستخدام الفلتر ده:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">cat /var/log/syslog | grep suspicious</code></pre>
+                    <img src="8.png" alt="Syslog Grep" class="image-spacing">
+                    <h4 class="text-lg font-bold mb-2">فحص journalctl</h4>
+                    <p class="mb-4">
+                        ممكن كمان نستخدم journalctl للفحص باستخدام الأمر ده:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-bash">sudo journalctl -u suspicious</code></pre>
+                    <img src="9.png" alt="Journalctl Output" class="image-spacing">
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">5 - فحص الـ Disk</h2>
+                    <p class="mb-4">
+                        الحوادث على Disk بيشمل المناطق اللي في (Filesystem) في Linux اللي الـ Hacker ممكن يستهدفوها ويتركوا آثار لأنشطتهم من منظور التحليل الجنائي، فحص المناطق دي مهم جدًا
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">نظام الملفات والدلائل (Directories)</h3>
+                    <p class="mb-4">
+                        في نظام الملفات الخاص بلينكس، فيه ملفات و Directories بتحتوي على معلومات حساسة وممكن تراقب و تتعقب لي اي محاولة هجوم او اختراق ,  وفي اماكن مهمه هحتاج نشوف منها ده :
+                    </p>
+                    <h4 class="text-lg font-bold mb-2">الـ (Configuration Files):</h4>
+                    <p class="mb-4">
+                        فيه بعض الإعدادات الشائعة اللي ممكن تكون مهمة جدًا من ناحية الأمان، زي:
+                    </p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>الـ`/etc/passwd`: الملف ده بيحتوي على معلومات عن حسابات المستخدمين.</li>
+                        <li>الـ `/etc/shadow`: الملف ده بيحتوي على كلمات المرور المرمزة (hashed) لحسابات المستخدمين.</li>
+                        <li>الـ `/etc/group`: الملف ده بيحدد المجموعات والمستخدمين اللي مرتبطين بيها. المجموعا دي بتستخدم لإدارة الأذونات وتنظيم المستخدمين اللي عندهم صلاحيات مشابهة.</li>
+                        <li>الـ`/etc/sudoers`: الملف ده بيحدد صلاحيات الـ `sudo`، وده ممكن يكون هدف لرفع الامتيازات (privilege escalation).</li>
+                    </ul>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">6 - انشاء (malicious package)</h2>
+                    <p class="mb-4">
+                        الhacker ممكن ينشئوا ويثبتوا حزمة ديبيان ضارة على نظام لينكس عشان يحققوا أهداف مختلفة، أو ممكن يخدعوا المستخدم إنه يثبت package ضارة , دلوقتي هنعمل Package ضار و ف نفس الوقت هنتحقق منه
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">ننفذ الأمر ده عشان نعمل دليل للحزمة:</h3>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">root@tryhackme:~# mkdir malicious-package
+root@tryhackme:/malicious-package# mkdir DEBIAN</code></pre>
+                    <p class="mb-4">
+                        الخطوة الجاية هي إننا نعمل ملف تحكم فيه معلومات أو بيانات تعريفية عن الحزمة اللي هننشيها ونثبتها. هنفتح ملف جوه دايركتوري  `DEBIAN` ونسميه `control` و هنضيف المحتوى ده للملف قبل ما نحفظه:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">Package: malicious-package
+Version: 1.0
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: attacker@test.com
+Description: This is a malicious Package</code></pre>
+                    <p class="mb-4">
+                        هننشئ سكريبت ضار بالمحتوى ده ونحفظه باسم `postinst` ونحطه في دايركتوري `DEBIAN`، زي ما هو موضح تحت:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">#!/bin/bash
+# Malicious post-installation script
+# It will run this script after installation
+
+# Print a suspicious message - for demonstration
+echo "something suspicious"</code></pre>
+                    <p class="mb-4">
+                        اعتبر ان جواه محتواه ضار متركزش , TryHackMe الي عاملين كدا مش انا :) 
+                        المهم هنغير أذونات السكريبت عشان نقدر نشغله باستخدام الأمر ده:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">root@tryhackme:# chmod 755 malicious-package/DEBIAN/postinst</code></pre>
+                    <p class="mb-4">
+                        هنستخدم الأمر الي جاي ده علشان نعمل الحزمة:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">root@tryhackme:# dpkg-deb --build malicious-package</code></pre>
+                    <p class="mb-4">
+                        بعدين هنحتاج نثبت الحزمه الأمر ده هيثبت الحزمة الضاره على Disk:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">root@tryhackme: dpkg -i malicious-package.deb</code></pre>
+                    <h3 class="text-xl font-bold mb-2">دلوقتي بعد ما ثبتنا الحزمة، خلينا نحقق ونشوف إزاي نقدر نحدد آثارها على Disk.</h3>
+                    <p class="mb-4">
+                        الأمر ده هيعرض كل الحزم اللي اتثبتت على Disk:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">dpkg -l</code></pre>
+                    <p class="mb-4">
+                        الأمر `dpkg -l` هيعرض كل الحزم اللي اتثبتت على الـ Disk. هنقدر نفحصهم كلهم عشان نحدد الحزمة اللي شكلها غريب. في حالتنا، بما إننا عارفين اسم الحزمة اللي ثبتناها، طبقنا شويه Filters، وكانت النتيجة بتأكد إن الحزمة فعلًا مثبتة على النظام.
+                    </p>
+                    <p class="mb-4">
+                        كمان ممكن نبص على ملف سجل `dpkg.log` زي ما هو موضح تحت:
+                    </p>
+                    <pre dir="ltr" class="code mb-4"><code class="language-ruby">ubuntu@tryhackme:/home$ grep " install " /var/log/dpkg.log
+2024-06-13 06:47:05 install linux-image-5.15.0-1063-aws:amd64 <none> 5.15.0-1063.69~20.04.1
+2024-06-13 06:47:06 install linux-aws-5.15-headers-5.15.0-1063:all <none> 5.15.0-1063.69~20.04.1
+2024-06-13 06:47:09 install linux-headers-5.15.0-1063-aws:amd64 <none> 5.15.0-1063.69~20.04.1
+2024-06-24 19:17:39 install osquery:amd64 <none> 5.12.1-1.linux
+2024-06-26 05:54:38 install sysstat:amd64 <none> 12.2.0-2ubuntu0.3
+2024-06-26 14:32:05 install malicious-package:amd64 <none> 1.0</code></pre>
+                    <p class="mb-4">
+                        دلوقتي بنعمل Filter على اي pack حصلها install 
+                        دلوقتي بما إننا غطينا بعض الأماكن المهمة اللي نقدر نلاقي فيها آثار أو مؤشرات للحوادث، خلينا ننتقل للخطوة الجاية: استكشاف إزاي السجلات (logs) بتلعب دور مهم في التحقيق في الحوادث.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">السجلات المهمة</h2>
+                    <p class="mb-4">
+                        دلوقتي، هنستكشف بعض الحوادث الشائعة عشان نفهم أهمية السجلات وازاي ممكن نفحصها عشان نلاقي صفات الحوادث المحتملة.
+                    </p>
+                    <h3 class="text-xl font-bold mb-2">الـSyslog:</h3>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>`/var/log/syslog`</li>
+                        <li>الملف ده مفيد لتحديد الأحداث العامة في النظام، الأخطاء، والتحذيرات. ممكن يوفر رؤى عن مشاكل في مكونات النظام أو الخدمات.</li>
+                        <li>بيحتوي على رسائل النظام العامة، بما في ذلك رسائل النواة (kernel)، خدمات النظام، وسجلات التطبيقات.</li>
+                        <li>الملف ده مفيد عشان نحدد أحداث عامة على مستوى النظام، أخطاء، وتحذيرات.</li>
+                        <li>ممكن يساعد في اكتشاف مشاكل في مكونات النظام أو الخدمات.</li>
+                    </ul>
+                    <img src="10.png" alt="Syslog Example" class="image-spacing">
+                    <h3 class="text-xl font-bold mb-2">الـMessages:</h3>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>المكان</strong>: `/var/log/messages`</li>
+                        <li>مشابه لـ syslog، الملف ده بيشمل رسائل النظام وسجلات النواة (kernel logs).</li>
+                        <li>مفيد في تشخيص مشاكل النظام وتتبع الأنشطة.</li>
+                        <li>العثور على إدخالات غير عادية متعلقة بالأجهزة أو أخطاء النواة ممكن يشير إلى محاولة للتلاعب بمكونات النظام.</li>
+                        <li>على سبيل المثال، رسائل متعددة عن مشكلة في النواة زي "kernel panic" ممكن تشير إلى محاولة هجوم نوعه "Denial-of-Service" بيستهدف استقرار النظام.</li>
+                    </ul>
+                    <h3 class="text-xl font-bold mb-2">سجلات المصادقة (Authentication Logs):</h3>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>`/var/log/auth.log`</li>
+                        <li>الملف ده بيسجل محاولات تسجيل الدخول، سواء اللي نجحت أو اللي فشلت.</li>
+                        <li>هو ملف مهم جدًا لاكتشاف محاولات الوصول غير المصرح بيها والهجمات اللي بتستخدم القوة الغاشمة (brute-force attacks).</li>
+                        <li>على سبيل المثال، لو لقينا محاولات فاشلة كتير لتسجيل الدخول من عنوان IP غريب أو في أوقات تسجيل دخول غير طبيعية، ده ممكن يشير إلى هجوم بالقوة الغاشمة أو محاولة للوصول غير المصرح بيه.</li>
+                        <li>بيعرض محتوى auth.log.</li>
+                    </ul>
+                    <img src="11.png" alt="Auth Log Example" class="image-spacing">
+                </div>
+
+                <h1 class="text-center mt-8">Made By ❤ everythingBlackkk</h1>
+            </div>
+        </div>
+
+        <!-- Left Section -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="../../Media/everythingBlackkk.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400">penetration tester | Red Team</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=snpxblack2006@gmail.com">
+                    <button class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-email text-sm md:text-base">
+                        Email Me
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pattern-bg"></div>
+</body>
+</html>
