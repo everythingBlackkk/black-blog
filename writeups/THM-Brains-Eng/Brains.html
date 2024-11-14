@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Brains | THM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="../../Media/logo.png" type="image/x-icon" sizes="64x64">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <link rel="stylesheet" href="../THM-Brains-Arb/Brains.css">
+    <style>
+        body {
+            direction: ltr;
+            text-align: left;
+        }
+        .code {
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: bidi-override;
+        }
+        .important-text {
+            color: #3498db;
+            font-weight: bold;
+        }
+        .section-spacing {
+            margin-bottom: 3rem;
+        }
+        .image-spacing {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="custom-bg text-white font-sans">
+    <div class="flex flex-row">
+        <!-- Left Section -->
+        <div class="left-section">
+            <div class="content-wrapper text-center">
+                <img src="../../Media/everythingBlackkk.png" alt="Profile" class="rounded-full w-48 h-48 mb-4 mx-auto relative z-10">
+                <h1 class="text-5xl font-bold gradient-text">Yassin Abdelrazik</h1>
+                <p class="text-xl text-gray-400">penetration tester | Red Team</p>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=snpxblack2006@gmail.com">
+                    <button class="py-2 px-4 bg-gray-700 text-white rounded-lg hover-email text-sm md:text-base">
+                        Email Me
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="right-section">
+            <div class="Sahm">
+                <a href="../../index.html" class="home-btn" style="font-size: 24px; display: flex; align-items: center;">
+                    <div style="background-color: rgba(128, 128, 128, 0.6); border-radius: 12px; padding: 10px 20px; display: flex; align-items: center; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.5);">
+                        <span style="font-size: 24px;">Home Page</span>
+                        <a href="../../index.html" style="margin-left: 10px; display: flex; align-items: center;">
+                            <div style="background-color: gray; border-radius: 50%; padding: 5px; display: flex; justify-content: center; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="content-wrapper">
+                <h1 class="text-4xl font-bold mb-6">Brains | THM</h1>              
+                
+                <div class="section-spacing">
+                    <p class="mb-4">
+                        This challenge has two interesting parts: <span class="important-text">offensive and defensive</span>. Let's explore them together.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">Offensive Part:</h2>
+                    <p class="mb-4">
+                        As usual, we need to check the ports and services on the target. Let's use Nmap:
+                    </p>
+                    <pre class="code mb-4"><code class="language-bash">nmap -sV -sC -p- 10.10.164.206</code></pre>
+                    <pre class="code mb-4"><code class="language-bash">
+$ nmap -T4 -n -sC -sV -Pn -p- 10.10.143.133
+
+Nmap scan report for 10.10.143.133
+Host is up (0.090s latency).
+Not shown: 65532 closed tcp ports (reset)
+PORT      STATE SERVICE  VERSION
+22/tcp    open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   3072 20:db:de:8e:f2:10:09:16:55:59:a7:18:06:3b:66:db (RSA)
+|   256 78:79:f3:1f:5e:ee:8d:65:3f:9e:42:d9:4f:60:09:63 (ECDSA)
+|_  256 5a:d0:1c:6d:c7:76:1d:5e:7a:c0:e7:bd:95:bf:fc:7d (ED25519)
+80/tcp    open  http     Apache httpd 2.4.41 ((Ubuntu))
+|_http-title: Maintenance
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+50000/tcp open  ibm-db2?
+| fingerprint-strings:
+|   GetRequest:
+|     HTTP/1.1 401
+|     TeamCity-Node-Id: MAIN_SERVER
+|     WWW-Authenticate: Basic realm="TeamCity"
+|     WWW-Authenticate: Bearer realm="TeamCity"
+|     Cache-Control: no-store
+|     Content-Type: text/plain;charset=UTF-8
+|     Date: Fri, 04 Oct 2024 23:37:31 GMT
+|     Connection: close
+|     Authentication required
+|     login manually go to "/login.html" page
+                    </code></pre>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">We found 3 open ports with services:</h2>
+                    <ul class="list-disc ml-8">
+                        <li class="mb-2">22 (SSH)</li>
+                        <li class="mb-2">80 (HTTP)</li>
+                        <li>50000 (HTTP)</li>
+                    </ul>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">Let's check port 80:</h2>
+                    <img src="../THM-Brains-Arb/1.PNG" alt="" class="image-spacing">
+                    <p class="mb-4">We find that there's nothing important, just a message.</p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">Let's check port 50000:</h2>
+                    <img src="../THM-Brains-Arb/2.PNG" alt="" class="image-spacing">
+                    <p class="mb-4">
+                        At <span class="important-text">http://10.10.143.133:50000</span> we find TeamCity Version 2023.11.3 (build 147512). As always, it's important to check for old vulnerabilities in this version that we can exploit for authentication bypass.
+                    </p>
+                    <p class="mb-4">
+                        After some research, we found <span class="important-text">(CVE-2024-27198 and CVE-2024-27199)</span>. If you read about these CVEs, you'll find that we might have RCE capabilities.
+                    </p>
+                    <p class="mb-4">
+                        Now, I want you to go search for an exploit for it and come back. Rely on yourself :)
+                    </p>
+                    <p class="mb-4">
+                        Done?
+                    </p>
+                    <p class="mb-4">
+                        Let's try to exploit it using this command:
+                    </p>
+                    <pre class="code mb-4"><code class="language-bash">python3 CVE-2024-27198-RCE/CVE-2024-27198-RCE.py -t http://10.10.143.133:50000</code></pre>
+
+                    <img src="../THM-Brains-Arb/3.PNG" alt="" class="image-spacing">
+
+                    <p class="mb-4">
+                        Now we have <span class="important-text">RCE on the system</span> and we can read the Flag.
+                        Of course, I won't tell you what it is, find it yourself.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">Defensive Part:</h2>
+                    <p class="mb-4">
+                        Most TryHackMe challenges or CTFs in general focus on these steps but not in the same way. The approach varies from system to system, but remember they all follow the same concept. CTF challenges aren't exactly like real-world scenarios, but they're really powerful and will teach you a lot.
+                    </p>
+                    <p class="mb-4">
+                        Now, we'll find <span class="important-text">port 8000 open for a service called "Splunk"</span>
+                        This is a tool that helps us monitor and analyze data like Log Files and such.
+                        I'll ask you a question now, did something come to mind??
+                        Think about it?
+                        We need to find three things in the defensive part:
+                    </p>
+                    <ol class="list-decimal ml-8 mb-4">
+                        <li>What's the username of who created the backdoor on the Server?</li>
+                        <li>What's the name of the malicious package installed on the Server?</li>
+                        <li>What's the name of the plugin installed on the Server?</li>
+                    </ol>
+                    <img src="../THM-Brains-Arb/4.PNG" alt="" class="image-spacing">
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">1 - First Question:</h2>
+                    <p class="mb-4">
+                        For the username, we can write this command to see all users that were added, and surely the Hacker added themselves when they first compromised the system:
+                    </p>
+                    <pre class="code mb-4"><code class="language-splunk">index* = "useradd"</code></pre>
+                    <img src="../THM-Brains-Arb/5.PNG" alt="" class="image-spacing">
+                    <p class="mb-4">
+                        Or we can check a file you know well
+                        Know it??
+                        You know it came to mind :)
+                        Can't we check <span class="important-text">/var/log/auth.log</span>?
+                        If you don't know what this is, it's the file that logs login attempts, both successful and failed, and other things explained in another article - don't forget to check it out.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">2 - Second Question:</h2>
+                    <p class="mb-4">
+                        What's the name of the malicious package installed on the Server?
+                    </p>
+                    <pre class="code mb-4"><code class="language-splunk">source="/var/log/dpkg.log" "install"</code></pre>
+                    <img src="../THM-Brains-Arb/6.PNG" alt="" class="image-spacing">
+                    <p class="mb-4">
+                        As we can see in the image, we found what the malicious package is, and I'll leave you to find it yourself.
+                    </p>
+                </div>
+
+                <div class="section-spacing">
+                    <h2 class="text-2xl font-bold mb-4">3 - Third Question:</h2>
+                    <p class="mb-4">
+                        What's the name of the plugin installed on the Server?
+                        Same as before, we'll use this command to get all plugins that were uploaded:
+                    </p>
+                    <img src="../THM-Brains-Arb/7.PNG" alt="" class="image-spacing">
+                    <pre class="code mb-4"><code class="language-splunk">source="/opt/teamcity/*" "plugin" "upload"</code></pre>
+                    <p class="mb-4">
+                        Regarding the opt file, it contains all applications not native to the system, and it's short for "optional". We use it to load applications that don't come with the system itself, and I'll leave you to search by yourself.
+                        As we can see, we were able to find the result.
+                    </p>
+                </div>
+
+                <h1 class="text-center mt-8">Made By ❤ everythingBlackkk</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="pattern-bg"></div>
+</body>
+</html>
